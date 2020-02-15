@@ -40,6 +40,7 @@
 5. layer的background在底部，然而border却是在上面，contents在中间，即使后面在addSubLayer，sublayer也是在中间
 
     ![](/images/layer_border_background.png)
+    ![QQ20190122-204106@2x.png](http://ww1.sinaimg.cn/large/bfdfb219gy1gbwz50pjx1j20640620t3.jpg)
 6. border是占据bounds区域的
     
     ![](/images/border.png)
