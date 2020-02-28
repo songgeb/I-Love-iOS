@@ -1,5 +1,7 @@
 # iOS难点攻关
 
+## 长期
+
 ## Core Animation
 
 ## Swift
@@ -101,8 +103,6 @@ Typically you should specify accessor method names that are key-value coding com
 
 ## new feature in Swift5
 
-## NSCoding
-
 ## Toll-Free Bridging
 
 ## OutputStream
@@ -113,3 +113,6 @@ Typically you should specify accessor method names that are key-value coding com
 2. 哪些animatable的属性
 
 ## xib、storyboard
+
+## 短期
+### NSCoding
