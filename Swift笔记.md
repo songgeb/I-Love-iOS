@@ -36,3 +36,31 @@ protocol Error {
 - `Error`是一个协议，表示一个可以`throw`的错误信息
 - 任何类型都可以实现`Error`协议
 - 比如enum遵循协议用来表示不同类型的错误信息，struct也可以遵循，用来表示信息量更大的错误信息
+
+## Tuple
+
+介绍几个tuple有意思的用法
+
+### 同时定义多个变常量
+```
+var (a, b, c) = (1, "2", 3.0)
+print(a)
+print(b)
+print(c)
+```
+
+### 变量交换值
+```
+(a, b) = (b, a)
+```
+
+### 分解
+
+```
+let http404Error = (404, "Not Found")
+let (statusCode, statusMessage) = http404Error
+print("The status code is \(statusCode)")
+// 输出 "The status code is 404"
+print("The status message is \(statusMessage)")
+// 输出 "The status message is Not Found"
+```
