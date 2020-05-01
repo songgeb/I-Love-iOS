@@ -16,3 +16,4 @@
 - [CFRunloop源码](https://opensource.apple.com/source/CF/CF-855.17/CFRunLoop.c)
 - [深入浅出 RunLoop（一）：初识](https://juejin.im/post/5e579f2c518825493c7b5a04)
 - [RunLoop的前世今生](https://juejin.im/post/5a3095435188250a5719b7b2)
+- [Runloop与performSelector](https://juejin.im/post/5c70b391e51d451646267db1)
