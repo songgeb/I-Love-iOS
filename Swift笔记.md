@@ -64,3 +64,16 @@ print("The status code is \(statusCode)")
 print("The status message is \(statusMessage)")
 // 输出 "The status message is Not Found"
 ```
+
+### 位运算
+
+- &，都为1，才为1，否则就是0
+- |，有一个是1就是1，除非都是0
+- ^，相同就是0，不同就是1
+
+|p|q|p&q|p\|q|p^q|
+|:-:|:-:|:-:|:-:|:-:|
+|0|0|0|0|0|
+|0|1|0|1|1|
+|1|0|0|1|1|
+|1|1|1|1|0|
