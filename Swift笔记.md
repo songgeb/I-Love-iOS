@@ -77,3 +77,9 @@ print("The status message is \(statusMessage)")
 |0|1|0|1|1|
 |1|0|0|1|1|
 |1|1|1|1|0|
+
+### 运算符优先级
+
+参考文章可以当做运算符优先级字典来查询
+
+- [Swift Operators](https://nshipster.com/swift-operators/)
