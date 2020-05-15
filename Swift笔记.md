@@ -82,4 +82,5 @@ print("The status message is \(statusMessage)")
 
 参考文章可以当做运算符优先级字典来查询
 
+- [Operator Declarations](https://developer.apple.com/documentation/swift/swift_standard_library/operator_declarations)
 - [Swift Operators](https://nshipster.com/swift-operators/)
