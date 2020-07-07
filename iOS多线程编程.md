@@ -70,9 +70,10 @@
 ## Dispatch Sources
 - Dispatch Source是调度系统底层事件处理逻辑的基础数据结构
 - 通常使用惯例是，监听某个系统事件，当事件到来时，Dispatch Source将指定的task`异步`提交到指定的queue中执行
-- 当新事件到来，但老事件的eventhandler还没有执行时，内部会将两个事件合并。最终新的eventhandler会执行，收到的也是新的事件内容（有些类型事件的handler）
-- 如果新事件到来时，旧eventhandler已经执行，那就等结束后，新eventhandler再执行
-- 因为source可能会一直持续，所以会持有queue和task，何时释放呢？
+- 当新事件到来，但老事件的eventhandler还没有执行时，内部会将两个事件合并。最终新的eventhandler会执行，收到的也是新的事件内容
+- 如果新事件到来时，旧eventhandler正在执行，那就等结束后，新eventhandler再执行
+- 因为source可能会一直持续，所以会持有queue和task，开发者要主动通过cancel方法来取消掉source
+- iOS 6之后，dispatchqueue、dispatchsource统一由ARC来管理，无需主动retain、release
 
 ### Creating Dispatch Sources
 - 刚创建完的source需要进行一些配置，所以状态是`suspended`，后面需要执行`dispatch_resume`才可以开始执行
