@@ -9,6 +9,8 @@
 - layer的backing store，指的是一块用于存储要通过GPU进行绘制的bitmap的内存部分
 - 官方没说，但从[Getting Pixels onto the Screen](https://www.objc.io/issues/3-views/moving-pixels-onto-the-screen/)这里可以知道，并不是所有情况下会开辟backing store这块内存的。比如这个layer要显示一张图片（content设置为CGImage），就不会额外开辟内存，绘制内容时直接将CGImage交给了GPU；但若重写了drawRect方法，便会开辟这块内存
 - 我想可能官方所说的backing store不只是额外开辟的这块内存，也包括了CGImage这种内容
+- layer有个delegate属性，可以通过delegate的方法，指定layer显示的内容或者对sublayer进行布局
+	- UIView的layer会自动将试图本身作为layer的delegate
 
 ### anchorpoint、position、frame
 1. layer的所有变换都是基于anchorpoint。
