@@ -158,11 +158,39 @@
 ### HTTPS采用混合加密机制
 
 - 分为两个阶段，先用非对称加密方式安全地交换密钥
-- 再使用密钥进行堆成加密方式的数据传输
+- 再使用密钥进行对称加密方式的数据传输
 	![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/https%E5%8A%A0%E5%AF%86%E8%BF%87%E7%A8%8B.png?raw=true)
 - 为了保证服务器的公钥的正确性，所以借助CA机构对服务器的公钥又加密了一把
 	![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/CA%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%85%AC%E9%92%A5%E8%BF%87%E7%A8%8B.png?raw=true)
 
+### 中间人攻击与charles抓包https
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/https_Man_in_the_middle_attack.png?raw=true)
+
+为了避免中间人攻击，会引入证书技术，又第三方权威的证书签名机构，对服务器证书进行签名，再下发给客户端，客户端提前装了权威证书机构的公钥
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/https_certificate.png?raw=true)
+
+charles其实就是利用了中间人攻击的思路，当用户在手机上安装了charles的证书中心时，相当于手机认为charles是一个合法的颁发证书（签名证书）的机构了
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/https_charles.png?raw=true)
+
+## GET和POST区别
+
+- get和post在http协议层面上，本质区别只有一个，协议规定get请求要是幂等的，post则无此要求
+- 所谓幂等，即每次发送请求产生的结果都是一样的
+- 这也就是为什么通常用get方法做拉取数据操作，用post方法做增删改操作了
+- 当然幂等的实现也需要服务器做好支持，服务端如果非得支持get请求做增删改，那也没辙
+- 另外，其实协议中并没有规定get和post的数据格式，没有要求get一定要通过URL传输、post一定通过body传输
+- 只是HTML标准当中有这种数据格式使用的约定
+- 另外http协议也么有规定两个种方法下传输数据的长度
+- 但有的浏览器和服务器会担心影响性能而限制url的长度
+- 所谓的post方法比get更安全，其实也只是相对而言
+- 由于http协议本身就是明文传输数据，如果截获肯定都不安全
+- 只是对于浏览器而言，get的话一般使用url传输，url中的数据直接保留在地址栏，而且浏览器可能缓存url信息。post方法没有上面的问题可能会相对安全
+
+### 参考
+- [HTTP｜GET 和 POST 区别？网上多数答案都是错的！](https://juejin.im/entry/597ca6caf265da3e301e64db)
 
 
 ## 参考

@@ -124,6 +124,7 @@
 - 对于在OperationQueue中的Operation，当依赖关系满足后，会自动执行。若是需要手动启动的Operation，那需要自行监听
 
 #### Operation Priority
+- 通过`queuePriority`这个property可以设置operation的执行优先级
 - 前提是，在同一个OperationQueue当中的Operation之间，优先级才能起作用
 - 通过设置优先级，可以决定Operation的执行顺序
 - 但一定要在满足依赖关系的前提下，优先级才会起作用
@@ -138,6 +139,37 @@
 - 也就是说cancel并不是直接让operation停止的，间接的
 - 这也解释了，为啥当suspend queue时，即使其中的operation已经被cancel了，也不会被remove掉。因为被suspend了，没有operation继续执行了，所以也就不会走到`间接return`代码了
 
+
+## QoS
+> qualityOfService
+
+可以理解为**任务优先级**，系统在为不同类型的任务分配CPU等资源时，要根据任务的优先级决定执行顺序。作为开发者，可以通过设置`QoS`可以帮助系统更好的执行任务
+
+一共有如下几种优先级等级
+
+|QoS|||
+|:-:|:-:|:-:|
+|User-interactive|根UI相关，需要立即执行||
+|User-initiated|也是需要立即得到结果|几乎立即执行|
+|Utility|需要些执行时间||
+|Background|可能需要后台执行||
+
+还有两种特别的`QoS`，开发者无法设置，系统自动设置的--`Default`和`Unspecified`
+
+- `Default`的优先级介于`Utility`和`User-initiated`之间
+
+对于`NSOperation`、`NSOperationQueue`、`dispatch queue`、`dispatch block`、`NSThread`、`pthread`，都支持通过`QoS`设置任务的优先级
+
+### 优先级翻转(Priority Inversions)
+
+正常情况下高优先级的任务总是优先于低优先级任务执行。
+如果一个高优先级的任务变得依赖于低优先级的任务（比如低优先级任务持有了高优先级需要的临界资源），导致低优先级任务先执行，这就叫优先级翻转
+
+iOS系统在一些优先级翻转的情况下会尝试提高低优先级任务优先级等操作来解决翻转问题
+
+当然，开发者最好能在一开始就避免优先级翻转问题
+
+[Prioritize Work with Quality of Service Classes](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/EnergyGuide-iOS/PrioritizeWorkWithQoS.html#//apple_ref/doc/uid/TP40015243-CH39)
 
 ## 思考
 1. 可以用`NSBlockOperation`实现多个block执行的逻辑
