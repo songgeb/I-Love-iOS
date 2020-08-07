@@ -85,17 +85,25 @@
 - 核心工作就是，将任务封装成`NSOperation`实例，添加到`NSOperationQueue`中执行
 - 与`Dispatch Queue`的相同点是，也是按照队列的先进先出原则
 - 不同点是，`NSOperationQueue`支持任务间依赖关系
+- queue本身不会主动的remove operation，而是让operation自己remove掉
+- 比如，当这个operation发现被cancel了，那么执行过程中有检查cacel状态的代码，检查不通过直接return了，这样才是真正从queue删掉了。所以才让自定义operation时尽量多的去check各种状态
+- 也就是说cancel并不是直接让operation停止的，间接的
+- 这也解释了，为啥当suspend queue时，即使其中的operation已经被cancel了，也不会被remove掉。因为被suspend了，没有operation继续执行了，所以也就不会走到`间接return`代码了
 
 ## NSOperation
 
 - 将任务执行进行封装，让用户只去关心具体要做的事情，无需过多考虑其他事情
+- `NSOperation`只是一个抽象基类，提供一些公开的api，具体的工作需要根据自定义需求继承基类实现
 - operation只能执行一次，不能重复执行
 - 一般放到operationQueue中执行，也可以自己控制让他执行，但要考虑更多事情，比如要保证其是否ready，否则会报异常
-- 既可以定义成并行operation，也可以是串行
-	- 并行的operation，需要在start方法中实现将任务放到子线程中的逻辑
-	- 串行operation平时用的更多，因为串行operation也可以并行执行，即放到operationQueue就行了
+- 既可以定义成同步执行的operation，也可以是异步的
+	- 异步的operation，需要在start方法中实现将任务放到子线程中的逻辑
+	- 同步operation平时用的更多，因为同步执行的operation也可以并行执行，即放到operationQueue就行了
 - 很多属性可以通过kvc设置，通过kvo观察，但由于可以执行在任意线程中，所以kvo的通知也可能在任何线程，要注意UI的更新问题
 - 默认的方法是线程安全的。但如果要重写方法、或自定义方法，要注意线程同步问题
+- 可以设置其在`NSOperationQueue`中的优先级，来控制执行顺序，但`dependency`会先考虑
+- 不论异步还是同步operation，都可以设置completionBlock，该block在`isFinished`变为true的时候执行
+- 提供了cancel方法，但需要子类通过频繁的check`isCancelled`来真正的取消工作
 
 ### NSBlockOperation
 
@@ -131,13 +139,6 @@
 
 #### Completion Block
 - 可以给Operation设置一个block，任务结束时执行
-
-## NSOperationQueue
-
-- queue本身不会主动的remove operation，而是让operation自己remove掉
-- 比如，当这个operation发现被cancel了，那么执行过程中有检查cacel状态的代码，检查不通过直接return了，这样才是真正从queue删掉了。所以才让自定义operation时尽量多的去check各种状态
-- 也就是说cancel并不是直接让operation停止的，间接的
-- 这也解释了，为啥当suspend queue时，即使其中的operation已经被cancel了，也不会被remove掉。因为被suspend了，没有operation继续执行了，所以也就不会走到`间接return`代码了
 
 
 ## QoS

@@ -86,6 +86,30 @@ OC的运行时提供了消息转发的方法，使得开发者可以有机会处
 	2. 同时也支持使用KVC的方式添加任意属性
 - 因为`CALayer`内部使用消息转发动态添加了相应的access方法，并存储了相应数据
 
+### Item 13: Consider Method Swizzling to Debug Opaque Methods
+
+核心的方法就是`method_exchangeImplementations(method1, method2)`
+
+```
+- (void)swizzleMethod1 {
+    NSLog(@"swizzleMethod1");
+}
+
+- (void)swizzleMethod2 {
+    NSLog(@"swizzleMethod2");
+}
+
+- (void)methodSwizzle {
+    Method method1 = class_getInstanceMethod([self class], @selector(swizzleMethod1));
+    Method method2 = class_getInstanceMethod([self class], @selector(swizzleMethod2));
+    
+    method_exchangeImplementations(method1, method2);
+    
+    NSLog(@"method2->");
+    [self swizzleMethod2];
+}
+```
+
 ### Item 14: Understand What a Class Object Is
 
 #### 如何确定某个对象能否能响应某个方法(selector)
