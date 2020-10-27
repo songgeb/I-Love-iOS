@@ -47,11 +47,11 @@
 3. `contentGravity`，类似UIImageView的`contentMode`，默认是填充满，不保持ratio
 5. layer的background在底部，然而border却是在上面，contents在中间，即使后面在addSubLayer，sublayer也是在中间
 
-    ![](/images/layer_border_background.png)
+    ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/layer_border_background.png?raw=true)
     ![QQ20190122-204106@2x.png](http://ww1.sinaimg.cn/large/bfdfb219gy1gbwz50pjx1j20640620t3.jpg)
 6. border是占据bounds区域的
     
-    ![](/images/border.png)
+    ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/border.png?raw=true)
 6. 如果显示的内容不需要透明度，建议把`opaque`设置为YES，提高性能
 6. layer有圆角时，一定不能设置opaque为YES，因为layer要靠透明来实现
 9. layer可以通过kvc添加属性、添加action
@@ -60,7 +60,7 @@
 1. shadow的部分其实已经超出了bounds部分，但layer的size不变
 2. 在不指定shadowPath的情况下，默认的shadowPath规则，如果layer不是全透明，就对整个layer围绕border添加shadow，如果layer背景是全透明的，就在layer的border周围、content还有sublayer都添加shadow
 
-![](/images/coreanimation_shadow_path.png)
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/coreanimation_shadow_path.png?raw=true)
 
 2. 相关的属性有
     - shadowColor
@@ -150,7 +150,7 @@
 - [关于beginTime、timeOffset等概念的示例图，方便理解](https://foolish-boy.github.io/2016/%E6%B5%85%E8%B0%88Layer%E5%92%8CAnimation/)
 
 
-![](/images/animation_begintime.png)
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/animation_begintime.png?raw=true)
 
 ### CGAffineTransform
 
