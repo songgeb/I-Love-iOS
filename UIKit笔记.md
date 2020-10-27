@@ -1,0 +1,64 @@
+# UIKit笔记
+
+UIKit中各UI控件备忘录
+
+## UITextView
+
+- 不支持placeholder
+- 但可以自己添加UILabel实现placeholder效果
+
+## UITextField
+
+### 复制粘贴
+- 默认会有复制粘贴效果
+- 没有很好的禁止粘贴的办法
+- 可以通过`UITextFieldDelegate`的begin和endeditting回调，使得在编辑过程中设置`userInteractiveEnable`为NO来关闭粘贴效果
+
+## Target-Action & UIControl
+- target-action是一个设计模式，UIControl实现了该设计模式
+- 如果target设置为nil，则事件会发送给firstResponder，沿着responder chain传递
+- 当添加多个target时，action发生时，多个target的action method都会执行
+
+## Bounds VS Frame
+
+- frame是view的最小包围盒矩形
+- 当view的transform变化时，比如旋转、缩放，都会导致frame改变；但bounds不会改变
+- 官方说设置frame的size时会影响到bounds的size，是说开发者设置frame时会这样；像通过修改transform进行缩放时，frame的size发生了变化，但bounds仍不变
+
+### 参考
+
+- [View Programming Guide for iOS](https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/WindowsandViews/WindowsandViews.html)
+- [iOS：重识Transform和frame](https://www.jianshu.com/p/e1fec2f92c63)
+
+## UIImage
+
+### images
+
+貌似是为动图设置的比如gif，别的类型还不清楚
+- 可以通过CG的方法获取data中每一帧数据，和UIImage的`animatedImage`方法创建包含`images`的UIImage
+- 包含images数据的图片，在button、imageview上展示时都是动态的
+
+## UIButton
+
+### titleEdgeInsets
+
+普通btn
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/uikit_btn.png?raw=true)
+
+### imageEdgeInsets
+
+### contentEdgeInsets
+
+## UITableView
+
+### automaticDimension
+
+当UITableView+isPagingEnable配合使用时，比如短视频App的大屏视频feed流页面，滚动过程中会发现contentSize不准确问题，原因在于`UITableView.estimatedRowHeight`属性
+- 该属性默认开启，值为`automaticDimension`
+- 因为了能每一行高度都不同，为了避免每次load开启后表示`UIKit`会通过该值估算`contentSize`等属性
+- 所以若需要精确的`contentSize`值，需要设置为0进行关闭
+
+### UITableViewDelegate
+
+
