@@ -2,6 +2,24 @@
 
 UIKit中各UI控件备忘录
 
+## UICollectionView
+- `reloadItemsAtIndexPaths`执行时默认是有fade动画
+- `reloadData`则不会
+- 可以通过`[UIView performWithoutAnimation]:`取消fade动画
+
+## 键盘
+- 对同一个observer添加多次通知，该observer就会收到多次通知
+- 在模拟器上由于不确定的因素，可能导致键盘show和hide通知展示多次
+- `UIKeyboardWillChangeFrameNotification`时机可能早于`UIKeyboardWillShowNotification`
+- 可以通过监听`UIKeyboardWillChangeFrameNotification`通知，判断frame于屏幕frame的关系
+
+```
+CGRect beginFrame = [value.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+CGRect endFrame = [value.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+BOOL willShow = beginFrame.origin.y >= SCREEN_HEIGHT && endFrame.origin.y < SCREEN_HEIGHT;
+BOOL willHide = beginFrame.origin.y < SCREEN_HEIGHT && endFrame.origin.y >= SCREEN_HEIGHT;
+```
+
 ## UITextView
 
 - 不支持placeholder
@@ -61,4 +79,29 @@ UIKit中各UI控件备忘录
 
 ### UITableViewDelegate
 
+## 自定义视图
 
+### 布局
+
+#### frame布局
+- `initWithFrame`中只添加对应的视图
+- `layoutsubviews`中设置frame
+
+#### autolayout布局
+- `initWithFrame`中直接添加视图并设置约束即可
+
+### 自适应高（宽）度视图
+
+所谓的自适应高宽度视图，可以参照UILabel、UIButton这种，满足以下两点或其中一点
+
+- 如果使用autolayout布局，只需要设置部分约束，则高度或宽度就会自动改变
+- 如果使用frame布局，则通过执行sizeToFit，视图的frame会自适应到合适尺寸
+
+如果要做很通用的视图组件，最好同时满足上面两点，这样使用方用着会很舒服
+
+满足上面两点有两种思路
+
+1. 为了让调用方在使用autolayout布局时可以自适应
+	- 视图内部可以使用autolayout布局，然后添加满约束，同时有些约束要设置为低优先级
+	- 同时为了满足sizeToFit可以work，还要重写视图的sizeThatFit方法，该部分使用frame布局，frame和autolayout的约束要保持逻辑一致
+2.
