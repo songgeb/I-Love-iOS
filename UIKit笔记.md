@@ -70,6 +70,25 @@ BOOL willHide = beginFrame.origin.y < SCREEN_HEIGHT && endFrame.origin.y >= SCRE
 
 ## UITableView
 
+### cell之间的横线
+1. 当设置了seperator样式后，tableview的cell之间就会显示横线
+2. 但有个问题，多余的cell也会展示
+3. 解决办法是给tableviewFooter设置一个空的view
+
+### 动画
+
+- `insertRows`等系列方法，默认情况是有动画地执行
+- `reloadData`则是无动画的刷新
+
+#### tableviewHeader动画
+可以通过如下代码实现tableViewHeader的动画
+
+```
+tableView.beginUpdates()
+//header animation
+tableView.endUpdates()
+```
+
 ### automaticDimension
 
 当UITableView+isPagingEnable配合使用时，比如短视频App的大屏视频feed流页面，滚动过程中会发现contentSize不准确问题，原因在于`UITableView.estimatedRowHeight`属性
@@ -78,6 +97,10 @@ BOOL willHide = beginFrame.origin.y < SCREEN_HEIGHT && endFrame.origin.y >= SCRE
 - 所以若需要精确的`contentSize`值，需要设置为0进行关闭
 
 ### UITableViewDelegate
+
+### UITableViewCell
+
+#### prepareForReuse和cellForRow不一定是成对出现的
 
 ## 自定义视图
 
@@ -104,4 +127,9 @@ BOOL willHide = beginFrame.origin.y < SCREEN_HEIGHT && endFrame.origin.y >= SCRE
 1. 为了让调用方在使用autolayout布局时可以自适应
 	- 视图内部可以使用autolayout布局，然后添加满约束，同时有些约束要设置为低优先级
 	- 同时为了满足sizeToFit可以work，还要重写视图的sizeThatFit方法，该部分使用frame布局，frame和autolayout的约束要保持逻辑一致
-2.
+
+2. 第二种方式是
+	- 自定义视图内部使用frame进行布局
+	- 这样sizeThatFit方法中可以返回正确的宽高度
+	- 同时，intrinsicContentSize也要有返回值，不能返回0
+	- 而且要衡量view不同方法调用时机，避免出现循环调用问题
