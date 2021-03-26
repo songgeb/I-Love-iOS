@@ -70,6 +70,37 @@ BOOL willHide = beginFrame.origin.y < SCREEN_HEIGHT && endFrame.origin.y >= SCRE
 
 ## UITableView
 
+### UITableViewCell
+
+系统提供了四种UITableViewCell的样式，分别是
+
+[![6jJfn1.md.png](https://z3.ax1x.com/2021/03/26/6jJfn1.md.png)](https://imgtu.com/i/6jJfn1)
+
+#### 如何使用cell的系统样式
+
+两种方式
+
+第一种方式是遵循正统的自定义cell套路
+
+1. 创建自定义cell，比如`CustomCell`，重写`initWithStyle:reuseId`初始化方法，在其中指定要用的style
+2. 通过`UITbleview.register`方法注册`CustomCell`
+3. `cellForRow`中通过`dequeueCellWithIdForIndexPath`获取cell，并为cell相应属性赋值
+
+第二种方法比较古老一些
+
+1. 无需`register`cell
+2. 直接在`cellForRow`中通过`dequeueCellWithId`获取cell，紧跟着需要判断如果cell为空，则使用`initWithStyle:reuseId`新建一个cell
+3. 为cell相应的属性赋值
+
+#### UITableViewCell.imageView
+
+不论使用自定义cell还是系统样式的cell，imageView都存在与cell中，如果给它赋值
+
+- 它会显示
+- 并且默认情况下，cell分割线会右移
+
+[![6jwsbj.md.png](https://z3.ax1x.com/2021/03/26/6jwsbj.md.png)](https://imgtu.com/i/6jwsbj)
+
 ### cell之间的横线
 1. 当设置了seperator样式后，tableview的cell之间就会显示横线
 2. 但有个问题，多余的cell也会展示
