@@ -341,6 +341,12 @@ presentation controller用来控制
     ![](/images/changing-adaptive-behavior-for-presented-view-controller.png)
     - 实现delegate的`presentationController:viewControllerForAdaptivePresentationStyle:`可以替换新的vc进行展示
 
+## 其他
+
+### hidesBottomBarWhenPushed
+
+该属性用起来比较诡异，需要避免其他问题，具体问题参考[这里](https://stackoverflow.com/a/23269013/5792820)
+
 ## 参考
 - [View Controller Programming Guide for iOS](https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/index.html#//apple_ref/doc/uid/TP40007457-CH2-SW1)
 - [iOS 视图控制器转场详解](https://blog.devtang.com/2016/03/13/iOS-transition-guide/)
