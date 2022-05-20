@@ -143,3 +143,5 @@ print(v1.ref === v2.ref ? "true" : "false")
 ```
 
 - [Understanding Swift Copy-on-Write mechanisms](https://medium.com/@lucianoalmeida1/understanding-swift-copy-on-write-mechanisms-52ac31d68f2f)
+
+## 疑问
