@@ -1,3 +1,22 @@
+# Swift
+
+## 概念
+
+### 是函数式语言吗？
+
+- [Swift Is Not Functional](https://robnapier.net/swift-is-not-functional)
+
+### 什么是高阶函数
+
+高阶函数是一种这样的函数：可以接收函数作为参数或者这个函数可以返回一个函数，满足任意之一就可以叫做高阶函数
+
+## Swift vs Objective C
+
+### 参考
+- [Static vs Dynamic Dispatch in Swift: A decisive choice](https://medium.com/@bakshioye/static-vs-dynamic-dispatch-in-swift-a-decisive-choice-cece1e872d)
+- [Increasing Performance by Reducing Dynamic Dispatch](https://developer.apple.com/swift/blog/?id=27)
+- [Swift Protocol Extensions Method Dispatch](https://medium.com/@leandromperez/protocol-extensions-gotcha-9ef1a42c83b6)
+
 ## OptionSet
 
 OptionSet作用类似于OC中按位枚举-`NS_OPTIONS`
@@ -145,3 +164,5 @@ print(v1.ref === v2.ref ? "true" : "false")
 - [Understanding Swift Copy-on-Write mechanisms](https://medium.com/@lucianoalmeida1/understanding-swift-copy-on-write-mechanisms-52ac31d68f2f)
 
 ## 疑问
+1. Swift是类型安全语言？类型安全是什么意思？
+2. dynamic关键词的深入理解，以及和@objc合用的注意事项

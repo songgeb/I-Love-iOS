@@ -48,6 +48,32 @@
 - `static binding`和`dynamic binding`是C语言中两种方法执行逻辑
 - 如果编译期间就知道要执行的方法，那编译期就会将该方法的地址硬编码到指令中，这边是`static binding`
 - `dynamic binding`则是，编译期间无法确定要执行方法，一定要等到运行时才能确定
+
+举例说明一下
+
+```
+void doTheThing(int type) {    
+if (type == 0) {        
+printHello();    
+} else {        
+printGoodbye();”
+}
+```
+
+- 编译器编译完成后的代码，printHello()和printGoodbye()位置会通过硬编码写入地址的方式，调用对应函数。这就是`static binding`或者说`static dispatch`
+
+```
+void(*fnc)();
+if (type == 0) {        
+fnc = printHello;    
+} else {        
+fnc = printGoodbye();”
+}
+fnc();
+```
+
+- 这种方式则是`dynamic binding`，直到运行时才能确定执行哪个方法
+
 - Objective-C便是采用了`dynamic binding`
 - `objc_msgSend`是很多OC执行方法后底层调用的方法
 	- `void objc_msgSend(id self, SEL cmd, ...)`
