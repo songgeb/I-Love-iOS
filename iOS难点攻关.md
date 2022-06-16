@@ -1,6 +1,7 @@
 # iOS难点攻关
 
 ## 长期
+1. Swift5 vs Swift4
 
 ## Core Animation
 
