@@ -25,6 +25,8 @@ OC和Swift下都支持
 - 如果希望对象类型支持，需要遵循NSCoding协议
 - NSCoder类似一个抽象类，常用的具体子类有NSKeyedArchiver、NSKeyedUnArchiver
 
+> 相比NSCoding，NSSecureCoding更加安全，更推荐使用
+
 ## Serialization & Deserialization
 
 Serialization & Deserialization为序列化、反序列化的意思
@@ -63,3 +65,4 @@ Core Data、SQLite、Realm都是数据库
 ## References
 - [Archives and Serializations Programming Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Archiving/Archiving.html)
 - [Property List 使用注意事项](https://juejin.cn/post/6844903992166711304)
+- [NSSecure​Coding](https://nshipster.com/nssecurecoding/)

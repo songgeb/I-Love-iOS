@@ -12,6 +12,7 @@ Criteria
 
 sut: System Under Test，待测系统
 
+
 ## UI Test
 
 UI testing lets you test interactions with the user interface. UI testing works by finding an app’s UI objects with queries, synthesizing events and then sending the events to those objects. The API enables you to examine a UI object’s properties and state to compare them against the expected state.

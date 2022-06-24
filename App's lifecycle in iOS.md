@@ -53,3 +53,12 @@ class let willTerminateNotification: NSNotification.Name
 
 
 ## Respond to Scene-Based Life-Cycle Events
+
+- 自iOS 13开始，Apple推出了multiple window(scene)的技术；简言之就是一个App进程可以有多个Window了；当然，目前该技术只支持在iPad系统上
+- 代码层面上与iOS 13之前的工程相比，最直观的区别就是多了一个SceneDelegate的东西（实质上不仅如此）
+
+> 本人没做过iPad应用的开发，只是通过一个tutorial简单的了解了一下
+
+## 参考
+- [Adopting Scenes in iPadOS](https://www.raywenderlich.com/5814609-adopting-scenes-in-ipados#toc-anchor-007)
+- [Architecting Your App for Multiple Windows](https://developer.apple.com/videos/play/wwdc2019/258/)
