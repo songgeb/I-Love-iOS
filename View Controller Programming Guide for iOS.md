@@ -1,4 +1,4 @@
-## View Controller学习笔记
+## View Controller Programming Guide for iOS
 
 两种展现vc的方式 **present** 和 **container**
 

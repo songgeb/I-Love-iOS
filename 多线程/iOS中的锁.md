@@ -1,4 +1,5 @@
-# iOS中的锁
+# Synchronization Tools in iOS
+
 
 锁是解决多线程安全问题的一个常见手段
 
@@ -82,12 +83,18 @@
 
 - `dispatch_semerphore`信号量值为1时也可以当做锁来用
 
-### 参考
+## 疑问
+1. iOS中锁是如何分类的，每种的特点、限制和应用场景是什么
+2. NSConditionLock、NSCondition、NSLock、NSRecursiveLock
 
+### 参考
+- [About Threaded Programming](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/AboutThreads/AboutThreads.html#//apple_ref/doc/uid/10000057i-CH6-SW2)
 - [谈 iOS 的锁](http://zenonhuang.me/2018/03/08/technology/2018-03-01-LockForiOS/)
 - [优先级反转那点事儿](https://zhuanlan.zhihu.com/p/146132061)
 - [不再安全的 OSSpinLock](https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/)
 - [dispatch_semaphore 会造成优先级反转，慎用！](https://blog.51cto.com/u_15064655/2573045)
 - [Prioritize Work with Quality of Service Classes](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/EnergyGuide-iOS/PrioritizeWorkWithQoS.html#//apple_ref/doc/uid/TP40015243-CH39)
 - [ObjC 多线程简析（二）- os_unfair_lock的类型和自旋锁与互斥锁的比较](https://juejin.cn/post/6844903778328510471)
-
+- [iOS——GCD的死锁案例](https://cloud.tencent.com/developer/article/1198721)
+	- 里面有几个死锁的demo
+- [Thread Safety in Swift](https://swiftrocks.com/thread-safety-in-swift)

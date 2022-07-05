@@ -190,6 +190,7 @@ charles其实就是利用了中间人攻击的思路，当用户在手机上安�
 - 只是对于浏览器而言，get的话一般使用url传输，url中的数据直接保留在地址栏，而且浏览器可能缓存url信息。post方法没有上面的问题可能会相对安全
 
 ### 参考
+- [Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content](https://www.rfc-editor.org/rfc/rfc7231#section-4.2.2)
 - [HTTP｜GET 和 POST 区别？网上多数答案都是错的！](https://juejin.im/entry/597ca6caf265da3e301e64db)
 
 

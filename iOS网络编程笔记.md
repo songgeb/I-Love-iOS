@@ -9,7 +9,7 @@
 - 也可以为task提供completion block，这种情况下，delegate方法就不会执行了
 - task刚创建完处于suspend状态，可以cancel、restart、resume task
 - 尽可能复用session，避免重建没必要的session
-- 注意，session的delegate方法，是执行在一个串行的operationQueue中，所以task的结果是串行毁回调
+- 注意，session的delegate方法，是执行在一个串行的operationQueue中，所以task的结果是串行回调
 
 > session对delegate是强引用，如果session不进行invalidate，会引起泄漏
 

@@ -6,6 +6,7 @@
 - 开发者只需要关注要处理的任务即可，无需自行维护线程
 - 而且管理线程的成本也转移给了系统，不再应用程序资源
 
+iOS提供了两个比较高级的多线程技术：GCD和NSOperation
 
 ## GCD（Grand Central Dispatch）
 
@@ -25,12 +26,12 @@
 - Dispatch sources
 
 ### Concurrent Dispatch Queue
-- 也叫做全局队列
+- 并发队列，也叫做全局队列
 - 系统为每个App提供4个全局、并发队列
 - 这四个队列主要是优先级不同
 
 ### Serial Dispatch Queue
-- 也叫做私有队列
+- 串行队列，也叫做私有队列
 - 主线程关联的main queue也是一个串行队列
 - 可以通过context给queue关联数据，task可以使用这些数据
 - 可以在queue销毁时执行方法以清理数据
@@ -60,9 +61,7 @@
 - 对于全局队列，是不起作用的，因为其他地方也可能在使用全局队列
 
 ### Dispatch_apply
-- 可以向for-loop一样，将多个迭代提交到queue中执行
-- 特别适合每个迭代没有关联时，使用该特性将每个迭代提交到并发队列中，这样每个迭代就有机会并发执行，会提高效率
-- 在所有迭代完成之前，阻塞当前线程，直到完成
+> This function submits a block to a dispatch queue for multiple invocations and waits for all iterations of the task block to complete before returning. If the target queue is a concurrent queue returned by dispatch_get_global_queue, the block can be invoked concurrently, and it must therefore be reentrant-safe. Using this function with a concurrent queue can be useful as an efficient parallel for loop.
 
 ### 线程安全
 - task中尽量少用锁，虽然锁本身安全，但有可能引起其他task阻塞
@@ -79,10 +78,12 @@
 - 刚创建完的source需要进行一些配置，所以状态是`suspended`，后面需要执行`dispatch_resume`才可以开始执行
 
 
-## Operation Queue
+## NSOperation and NSOperationQueue
 
-- 核心的两个类是`NSOpertionQueue`和`NSOperation`
-- 核心工作就是，将任务封装成`NSOperation`实例，添加到`NSOperationQueue`中执行
+- 核心类是`NSOperation`，将任务封装成`NSOperation`实例
+- NSOperationQueue是一个可以支持NSOperation运行的队列，可以设置并发NSOperation任务数
+- NSOperationQueue用来管理NSOperation的执行，比如决定使用哪个线程执行任务等。内部并不会无限制的创建线程，而是会考虑当前设备、系统的状态
+- NSOperation并不依赖NSOperationQueue才能执行
 - 与`Dispatch Queue`的相同点是，也是按照队列的先进先出原则
 - 不同点是，`NSOperationQueue`支持任务间依赖关系
 - queue本身不会主动的remove operation，而是让operation自己remove掉
@@ -94,7 +95,7 @@
 
 - 将任务执行进行封装，让用户只去关心具体要做的事情，无需过多考虑其他事情
 - `NSOperation`只是一个抽象基类，提供一些公开的api，具体的工作需要根据自定义需求继承基类实现
-- operation只能执行一次，不能重复执行
+- operation只能执行一次，不能重复执行(is a single-shot object)。即一个operation只能执行一次任务，不能重复使用同一个实例进行多次任务的执行（我想这种设计是想简化内部逻辑）
 - 一般放到operationQueue中执行，也可以自己控制让他执行，但要考虑更多事情，比如要保证其是否ready，否则会报异常
 - 既可以定义成同步执行的operation，也可以是异步的
 	- 异步的operation，需要在start方法中实现将任务放到子线程中的逻辑
