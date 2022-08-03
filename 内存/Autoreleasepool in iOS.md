@@ -89,3 +89,4 @@ for (NSURL *url in urls) {
 
 - [AutoreleasePool底层实现原理](https://juejin.im/post/5b052282f265da0b7156a2aa)
 - [Using Autorelease Pool Blocks](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmAutoreleasePools.html#//apple_ref/doc/uid/20000047-CJBFBEDI)
+- [autoreleasepool uses in Swift](https://swiftrocks.com/autoreleasepool-in-swift)

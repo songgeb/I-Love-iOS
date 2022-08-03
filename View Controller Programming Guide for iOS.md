@@ -45,6 +45,7 @@
 ### presenting vs presented
 
 A present B
+
 - B是presented vc，但B.presentingVC不一定是A
 - 当A是childVC时，那B.presentingVC是A的parent
 - 当A作为container，那B.presentingVC才是A
@@ -52,49 +53,100 @@ A present B
 
 ### Presentation Styles
 
+```
+typedef NS_ENUM(NSInteger, UIModalPresentationStyle) {
+    UIModalPresentationFullScreen = 0,
+    UIModalPresentationPageSheet API_AVAILABLE(ios(3.2)) API_UNAVAILABLE(tvos),
+    UIModalPresentationFormSheet API_AVAILABLE(ios(3.2)) API_UNAVAILABLE(tvos),
+    UIModalPresentationCurrentContext API_AVAILABLE(ios(3.2)),
+    UIModalPresentationCustom API_AVAILABLE(ios(7.0)),
+    UIModalPresentationOverFullScreen API_AVAILABLE(ios(8.0)),
+    UIModalPresentationOverCurrentContext API_AVAILABLE(ios(8.0)),
+    UIModalPresentationPopover API_AVAILABLE(ios(8.0)) API_UNAVAILABLE(tvos),
+    UIModalPresentationBlurOverFullScreen API_AVAILABLE(tvos(11.0)) API_UNAVAILABLE(ios) API_UNAVAILABLE(watchos),
+    UIModalPresentationNone API_AVAILABLE(ios(7.0)) = -1,
+    UIModalPresentationAutomatic API_AVAILABLE(ios(13.0)) = -2,
+};
+```
+
+#### Automatic
+
+- default value
+- For most view controllers, UIKit maps this style to the `UIModalPresentationStyle.pageSheet` style, but some system view controllers may map it to a different style.
+
 #### Full-Screen Styles
 
 1. 下面的style都会盖住全屏，用户都没办法再跟被盖住的页面进行任何交互；但是，不是所有style下，下面页面的内容都能够展示，有的可以透过来
 2. 通过该种style进行presentation时，真正执行presentation的vc不一定是presenting vc，`UIKit`会找到符合全屏present的vc，如果找不到，则用window.rootViewController。但这不会改变presenting和presented vc。
 
+> UIModalPresentationFullScreen 和 UIModalPresentationFullScreen在present时，UIKit都会在动画结束后，将被遮盖住的vc的view删掉（原因不明）。如果为了让下面的vc内容显示，可以让使用两个style的cover形式
+
+全屏样式style枚举有：
 
 - UIModalPresentationFullScreen
     - present之后会remove掉presentingVC的view
 - UIModalPresentationOverFullScreen
     - 也是占满屏幕，但不会remove掉presentingVC的view。为的是如果presenting VC是半透明的，有内容需要从后面透过来时，就要这样设计了
-- UIModalPresentationPageSheet
+
+#### Sheet Styles
+
 - UIModalPresentationFormSheet
+	- regular width, regular height, system add a dimming layer over the background content and centers presented vc's content
+	- can customize content size under regular width, regular height with `preferredContentSize`
+	- regular height, compact width, like a sheet with part of the background content visible near the top of the screen
+	- compact height, same as `UIModalPresentationFullScreen`
+- UIModalPresentationPageSheet
+	- regular width, regular height, system add a dimming layer over the background content and centers presented vc's content
+	- content size under regular width, regular height can not be changed
+	- regular height, compact width, like a sheet with part of the background content visible near the top of the screen
+	- compact height, same as `UIModalPresentationFullScreen`
 
-#### popover style
+Where the background content remains visible, the system doesn’t call the presenting view controller’s viewWillDisappear(_:) and viewDidDisappear(_:) methods.
 
-对应的style枚举值是`UIModalPresentationPopover`
+#### Popover Style
 
-#### The Current Context Styles
+- `UIModalPresentationPopover`
 
-style枚举值是`UIModalPresentationCurrentContext`
+The Current Context Styles
+
+- `UIModalPresentationCurrentContext`
 
 - 该属性，使得present时不一定遮盖住presentedVC，可以自定义present时遮盖住哪个vc
 - 比如，splitVC中，如果进行跳转可以选择新跳转的presentedVC要遮盖住master还是detail
 
-![](/images/CurrentContextStyles.png)
+#### Custom
+
+- Using this option to customize presentation style and transition style
 
 ### Presentation Styles 和 Transition Styles
 
 两者是不一样的：
 
-- Presentation Styles，显示样式，是区别于transition style的
+- Presentation Styles，转场结束后显示的样式，是区别于transition style的
     - modalPresentationStyle 
-- Transition Styles，转场样式/动画
+- Transition Styles，转场过程中的动画样式
     - modalTransitionStyle
+- Transition style一定是在modal presentation的前提下才有意义(从属性命名上也能看得出来)
 - 两者都是设置给被present的vc，即presentedvc
 
-> UIModalPresentationFullScreen 和 UIModalPresentationFullScreen在present时，UIKit都会在动画结束后，将被遮盖住的vc的view删掉（原因不明）。如果为了让下面的vc内容显示，可以让使用两个style的cover形式
+### Transition Styles
 
-1. modalTransitionStyle，默认值是`UIModalTransitionStyleCoverVertical`
+Transition Styles is referred to the property `modalTransitionStyle` of `iewController`
 
-#### Custom Presentation Styles
 
-用于自定义显示样式
+```
+typedef NS_ENUM(NSInteger, UIModalTransitionStyle) {
+    UIModalTransitionStyleCoverVertical = 0,
+    UIModalTransitionStyleFlipHorizontal API_UNAVAILABLE(tvos),
+    UIModalTransitionStyleCrossDissolve,
+    UIModalTransitionStylePartialCurl API_AVAILABLE(ios(3.2)) API_UNAVAILABLE(tvos),
+};
+```
+
+- default value is `UIModalTransitionStyleCoverVertical`,when present, bottom to top
+- `UIModalTransitionStyleFlipHorizontal`, horizontal 3D flip from right-to-left
+- `UIModalTransitionStyleCrossDissolve`, cross-fade
+- `UIModalTransitionStylePartialCurl`
 
 ### Presenting vs Showing a View Controller
 
@@ -213,66 +265,10 @@ child1.removeFromParent()
 
 子视图控制器中可以指定一个期望的size，外面container可以直接使用，方便布局
 
-## Customizing the Transition Animations
-
-### The Transitioning Delegate
-
-![](/images/custom-presentation-and-animator-objects.png)
-
-- 必须实现`UIViewControllerTransitioningDelegate`协议
-- 如果需要自定义转场动画，则必须提供animator方法，animator负责present时的转场动画，比如动画样式、动画时间等；animator需要实现`UIViewControllerAnimatedTransitioning`协议
-- 可选地另提供用户可交互的animator，实现`UIViewControllerInteractiveTransitioning`
-    - 实质是是否需要一些用户可交互的手势去驱动转场动画的执行
-    - 系统提供了一个基于百分比，进行用户交互动画的类`UIPercentDrivenInteractiveTransition`
-- 提供presentationController，用于自定义present时presntationStyle
-- Transitioning Delegate不一定既提供animator，也提供presentationController
-    - 如果不设置animator，UIKit会使用`modalTransitionStyle`的值；presentationController同理
-    - 如果要让presentationController起作用，则必须设置`modalPresentationStyle`为`custom`
-
-> 注意，用户可交互的animator和普通的animator并不是非此即彼的关系，自定义转场动画时普通animator必须要有；而用户交互的animator是可选的，就像navigationtroller提供的左滑dismiss用户交互一样，动画是要有的，但不一定支持手势来驱动转场动画
-
-### The Custom Animation Sequence
-
-不论present还是dismiss，UIKit首先会跟询问`transitionDelegate`的`animationControllerForPresentedController:presentingController:sourceController:`，找到自定义的`Animator`
-
-#### present时
-
-1. `transitionDelegate.interactionControllerForPresentation:`检查是否用户手势驱动动画
-2. `animator.transitionDuration`，获取动画时长
-3. 如果不需要用户交互驱动动画，则直接执行`animator.animationTransition`；如果需要交互则先`interactionController.startInteractiveTransition:`，再进行`animator.animationTranstion`
-4. UIKit等待animator执行`completeTransition:`方法，通知UIKit动画已经完成
-5. UIKit调用`presentViewController:animated:completion:`中的completion回调；执行`animator.animationEnd`
-
-> 代码测试发现，用于用户交互的`UIViewControllerInteractiveTransitioning`，其工作原理大致上是，当present方法调用后，animator中的`animationTransition`会立即执行，就是说此时可能view层级中已经有了要添加的view，只是，动画不会完成，要等待用户交互完成
-
-### The Transitioning Context Object
-
-
-![](/images/transitioning-context-object.png)
-
-> 视图表示的是绿色vc present 蓝色vc的过程
-
-- transtion动画开始之前，由UIKit创建context object
-- context object实现了`UIViewControllerContextTransitioning`协议
-- transition动画其实是要在一个`containerView`添加/删除要展现的view，同时执行动画。`containerView`就是图中白色的视图，它和绿色、蓝色vc的视图是不同的
-- context object中保存了transition所需的信息，如会引用transition所涉及的vc、view(比如上一条说的containerView)等
-- 由于多次进行transition时，状态不容易同步的原因，不建议自己缓存一些状态数据，应该使用context object提供的数据，它可以保证数据状态一致
-
-### The Transition Coordinator
-
-- transition过程中，UIKit会创建coordinator。说是负责一些额外的动画工作，不懂
-- transition不仅是present或dismiss，屏幕旋转、或一些导致视图变化的因素都会导致transition发生？
-- 可以通过transition中相关vc的`transitionCoordinator`获取
-- 和context object类似，他也有transition的众多信息
-- context object仅在transition执行过程中有效
-
-### Creating Animations that Run Alongside a Transition
-
-在transition过程中，通过coordinator的两个方法可以执行一些额外的动画。当然，仅限于transition过程中，因为coordinator仅在这个期间有效
-
 ## Creating Custom Presentations
 
 presentation controller用来控制
+
 - 是`UIPresentationController`的子类
 - 可以控制presented vc的大小，即finalFrame
 - 可以添加一些额外的视图，比如蒙层
@@ -288,6 +284,7 @@ presentation controller用来控制
 ### The Custom Presentation Process
 
 对于present过程如下所示，对于dismiss也是类似过程，只是api方法不同
+
 1. `transitionDelegate`的`presentationControllerForPresentedViewController:presentingViewController:sourceViewController:`方法，获取presentationController
 2. 通过transitionDelegate获取animator
 3. 执行presentationController的`presentationTransitionWillBegin`方法；

@@ -12,3 +12,5 @@ I called this General knowledge.(通识知识) This passage will list the genera
 - APNs
 - Dynamic in UIKit
 - Extension
+- library, framework. static library vs dynamic library
+- switch in Swift

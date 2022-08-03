@@ -173,8 +173,11 @@ iOS系统在一些优先级翻转的情况下会尝试提高低优先级任务�
 
 [Prioritize Work with Quality of Service Classes](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/EnergyGuide-iOS/PrioritizeWorkWithQoS.html#//apple_ref/doc/uid/TP40015243-CH39)
 
-## 思考
-1. 可以用`NSBlockOperation`实现多个block执行的逻辑
+
+## Thread-Safe classes
+
+[Thread Safety Summary](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html#//apple_ref/doc/uid/10000057i-CH12-SW1)
+
 
 ## 参考
 - [Concurrency Programming Guide](https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html)

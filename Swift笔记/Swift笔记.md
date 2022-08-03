@@ -166,3 +166,5 @@ print(v1.ref === v2.ref ? "true" : "false")
 ## 疑问
 1. Swift是类型安全语言？类型安全是什么意思？
 2. dynamic关键词的深入理解，以及和@objc合用的注意事项
+3. 写算法时经常碰到的hashMap.keys到底是什么类型，和Array、String之间的关系是什么
+4. 哪些方法有sort方法
