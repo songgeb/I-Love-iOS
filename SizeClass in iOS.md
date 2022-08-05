@@ -12,8 +12,8 @@
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/size-class%203.png?raw=true)
 
 1. 图中列出了当时(2017年)所有iPhone和iPad的尺寸(半透明的矩形代表不同设备)，并且提供了portrait和landscape两个方向
-2. 两条白线列出了四个象限，分别对应着`compact`和`regular`的尺寸
-3. 白线的位置距离左上角是否固定？目前来看iPhone Xs landscape下的宽度应该是`wC`和的`wR`的界限；同样iPhone Xs landscape下的高度应该是`hC`和`hR`的界限。随着新设备出来，我想白线是会变的
+2. 两条白线列出了四个象限，分别对应着`compact`和`regular`的尺寸。compact小于regular
+3. 白线的位置距离左上角是否固定？目前来看iPhone Xs landscape下的宽度应该是`wC`和的`wR`的界限(width compact、width regular)；同样iPhone Xs landscape下的高度应该是`hC`和`hR`的界限。随着新设备出来，我想白线是会变的
 3. 任何一个设备，左上角对齐放入这个坐标系下，宽或高所在的象限就是它的Size Class值
 4. 例如，iPhone Xs Max的landscape情况下，是compact height + regular width
 

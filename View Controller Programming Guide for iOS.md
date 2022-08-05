@@ -116,17 +116,17 @@ The Current Context Styles
 
 #### Custom
 
+- `UIModalPresentationCustom`
 - Using this option to customize presentation style and transition style
 
 ### Presentation Styles 和 Transition Styles
 
-两者是不一样的：
 
 - Presentation Styles，转场结束后显示的样式，是区别于transition style的
     - modalPresentationStyle 
 - Transition Styles，转场过程中的动画样式
     - modalTransitionStyle
-- Transition style一定是在modal presentation的前提下才有意义(从属性命名上也能看得出来)
+- 为转场提供了两部分能力，转场过程动画的样子、转场结束后内容的大小和底层内容的显示状态
 - 两者都是设置给被present的vc，即presentedvc
 
 ### Transition Styles
@@ -172,6 +172,7 @@ typedef NS_ENUM(NSInteger, UIModalTransitionStyle) {
 ### segue
 
 segue是Interface Builder中方便两个vc之间进行presentation的机制
+
 - 设置展现方式，show、present modally
 - present时可以设置presentationStyle、transitionStyle
 - 也可以自定义segue
@@ -192,16 +193,6 @@ segue是Interface Builder中方便两个vc之间进行presentation的机制
 4. button点击时会传递到IBAction的方法中，系统自动关闭vc，并且IBAction的方法也可以自己写些其他操作
 
 > IBAction一定要写，否则找不到target
-
-### transition context
-
-1. UIKit创建的，用来完成整个transition操作；有转换前后的vc信息
-2. 由它去获取ainimationobject
-
-### custom presentation
-
-- presentation controller来控制转场的过程，比如设置presented vc的view尺寸、设置进入动画
-- animator object
 
 ## Container ViewController
 1. container vc只管理自己的view和children的**root view**，负责对root view布局
@@ -264,34 +255,6 @@ child1.removeFromParent()
 #### preferredContentSize
 
 子视图控制器中可以指定一个期望的size，外面container可以直接使用，方便布局
-
-## Creating Custom Presentations
-
-presentation controller用来控制
-
-- 是`UIPresentationController`的子类
-- 可以控制presented vc的大小，即finalFrame
-- 可以添加一些额外的视图，比如蒙层
-- 当设备信息发生变化时，如旋转，进行页面适配
-
-> UIPresentationController提供了很多控制transition过程、获取各种信息的方法
-
-### PresentationController VS Animator
-
-- Animator只负责presentedVC和presentingVC的rootView的增加、删除以及动画，不涉及额外的视图；额外的蒙层等其他视图由PresentationController进行增删和动画
-- Animator中通过context object获取的finalFrame，数据来源来自PresentationController的`frameOfPresentedViewInContainerView`方法
-
-### The Custom Presentation Process
-
-对于present过程如下所示，对于dismiss也是类似过程，只是api方法不同
-
-1. `transitionDelegate`的`presentationControllerForPresentedViewController:presentingViewController:sourceViewController:`方法，获取presentationController
-2. 通过transitionDelegate获取animator
-3. 执行presentationController的`presentationTransitionWillBegin`方法；
-    - 自定义添加的视图，可以写到这里
-    - 动画也可以写到这里，使用coordinator的animate相关方法
-4. UIKit会调用presentation Controller的`containerViewWillLayoutSubviews`方法，可以进行视图的微调
-5. 调用presentationController的`presentationTransitionDidEnd:`方法
 
 ## Building an Adaptive Interface
 
