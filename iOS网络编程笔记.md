@@ -52,6 +52,14 @@
     - `URLSessionDownloadTask`，接收文件格式数据，支持后台上传、下载数据
     - `URLSessionStreamTask`，用于tcp通信
 
+### State
+
+- `URLSessionDataTask`等Task类都是继承自`URLSessionTask`
+- 有几个API
+	- resume
+	- suspend，挂起后相当于暂停，还可以resume
+	- cancel
+
 ## Handling an Authentication Challenge
 
 

@@ -163,8 +163,19 @@ print(v1.ref === v2.ref ? "true" : "false")
 
 - [Understanding Swift Copy-on-Write mechanisms](https://medium.com/@lucianoalmeida1/understanding-swift-copy-on-write-mechanisms-52ac31d68f2f)
 
+## self vs Self
+
+- Self is only available inside protocol, it refers to the type that conforms to the protocol
+- self refers to the value of current type no matter where the self is in
+
+- [Self vs self - what's the difference?](https://www.hackingwithswift.com/example-code/language/self-vs-self-whats-the-difference)
+
+## Protocol types cannot conforms to protocol
+
+- [Protocol Types Cannot Conform to Protocols](https://github.com/apple/swift/blob/main/userdocs/diagnostics/protocol-type-non-conformance.md)
+
 ## 疑问
 1. Swift是类型安全语言？类型安全是什么意思？
 2. dynamic关键词的深入理解，以及和@objc合用的注意事项
 3. 写算法时经常碰到的hashMap.keys到底是什么类型，和Array、String之间的关系是什么
-4. 哪些方法有sort方法
+4. 哪些方法有sort方法，都有几种sort方法声明，每种写法如何

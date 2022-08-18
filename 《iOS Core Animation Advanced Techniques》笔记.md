@@ -122,7 +122,3 @@ kept; anything else is discarded
 1. 经测试，calayer的mask不支持动画
 2. uiview的类，直接修改frame无法产生隐式动画
 3. 一个layer，直接修改animatable property可以自动产生隐式动画。但一个view.layer，直接修改却不行
-
-
-
- 

@@ -39,8 +39,9 @@
 
 仅支持如下几种后台任务
 
-- 通过`- (UIBackgroundTaskIdentifier)beginBackgroundTaskWithExpirationHandler:(void (^)(void))handler;`方法可以后台执行代码
-- 后台持续播放音乐--Audio
+- Background Task Completion
+	- 通过`- (UIBackgroundTaskIdentifier)beginBackgroundTaskWithExpirationHandler:(void (^)(void))handler;`方法可以后台执行代码
+- Background Audio
 - 后台持续接收定位信息更新--Location updates
 - Voice over IP，IP电话服务，也是持续的，就是前几年流行的网络免费电话
 - Newsstand，后台更新杂志信息。iOS 13之后已经废弃，建议改用Remote Notification完成
@@ -49,6 +50,21 @@
 - [Background Modes Tutorial: Getting Started](https://www.raywenderlich.com/5817-background-modes-tutorial-getting-started)
 
 ### iOS 7
+
+#### Background Task changs
+
+BackgroundTask从策略上进行了一次改变
+
+- iOS 7之前，进入后台后，App会保持一定的时间仍在运行
+- iOS 7之后，进入后台后，App将会很快让App进行休眠，回收网络等资源，尽可能节省电量。但为了能够完成BackgroundTask，会在更合适的时机（比如下次系统应用Email尝试后台拉取邮件时）尝试给我们App的BackgroundTask资源和时间来执行任务
+
+下图展示这个改变
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios-multitask-backgroundtask-ios6.png?raw=true)
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios-multitask-backgroundtask-ios7.png?raw=true)
+
+> 如果在后台任务中，要执行网络传输工作的话，建议使用新引入的`NSURLSession`的background session。该部分后面会提到
 
 ### iOS 9
 

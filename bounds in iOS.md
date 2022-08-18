@@ -65,7 +65,7 @@ bounds指的是View.bounds
 
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/bounds_originchange.png?raw=true)
 
-![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/bounds_originchange_display?raw=true)
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/bounds_originchange_display.png?raw=true)
 
 ### 另一种bounds的理解角度
 
