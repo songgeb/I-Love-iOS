@@ -1,39 +1,15 @@
 # Background Execution in iOS
 
+> 深入理解代替单纯记忆
+
 > 本文写于2022年07月01日，此时iOS最新版本是15
-
-## 为何要写这篇笔记
-
-最近面试了一家公司，其中就问到了iOS中后台任务。
-
-很惭愧，过去工作中几乎没接触过，所以没回答上来
-
-事后复盘，发现过去的学习有一个问题：
-
-- 对于通识性的知识了解不够
-- 通识性的内容并不要求理解特别深入，但要知道能做哪些事情，比如AVFoundation大致能做哪些事情--拍照、录音、录像、视频剪辑
-- 通识性的内容还有不少，列了几个，想到就加一点
-	- App status，为什么要有这些状态，这些状态之间可以怎样切换
-	- 后台下载，能不能一直在后台运行，一直在后台下载内容可以吗。iOS对权限控制的很严格，大致允许在后台做哪些事情
-	- APNs，iOS的APNs能做到哪些事情
-	- 什么是Extension，有哪些常见的Extension应用。Extension有哪些限制
-	- iOS中的网页上的视频播放时看上去是打开了一个原生的播放器？
-	- UIKit中的Dynamic是啥
-	- App退出后视频还能播放是什么技术
-
-> 也有人说，真正对iOS开发热爱的话，上面这些问题根本不需要记下来专门找时间去学。而是每次WWDC开会时就兴奋地熬夜看了
-> 
-> 不错，我很赞同。但
-> 
-> 不是每个iOS开发者都如此的热爱，很多人接受了十几年教育后可能都不清楚自己到底对什么感兴趣，这是教育的问题，扯远了。总之，有一句话叫做：如果能做到学我所爱那是最好不过，如不然，爱我所学同样也会有所成就
 
 ## 历史
 - iOS 4(WWDC 2010)首次引入multitasking的概念
-- iOS 7(WWDC 2013)调整了后台任务的执行时机，同时这才是真正的后台多任务
-- iOS 9(WWDC 2015)中BackgroundModes中加入了Audio,  Airplay, and Picture in Picture
+- iOS 7(WWDC 2013)调整了后台任务的执行策略，同时这才是真正的后台多任务
 - iOS 13(WWDC 2019)引入了新的Framework--Background Tasks
 
-### iOS 7之前
+## iOS 7之前
 
 此时的后台任务功能还很单一，比如通过`beginBackgroundTaskWithExpirationHandler `方法也只能在后台执行短暂的任务，如果任务一直不完成会被系统自动挂起或杀死
 
@@ -46,12 +22,12 @@
 - Voice over IP，IP电话服务，也是持续的，就是前几年流行的网络免费电话
 - Newsstand，后台更新杂志信息。iOS 13之后已经废弃，建议改用Remote Notification完成
 
-#### 参考
+### 参考
 - [Background Modes Tutorial: Getting Started](https://www.raywenderlich.com/5817-background-modes-tutorial-getting-started)
 
-### iOS 7
+## iOS 7
 
-#### Background Task changs
+### Background Task changs
 
 BackgroundTask从策略上进行了一次改变
 
@@ -66,12 +42,104 @@ BackgroundTask从策略上进行了一次改变
 
 > 如果在后台任务中，要执行网络传输工作的话，建议使用新引入的`NSURLSession`的background session。该部分后面会提到
 
-### iOS 9
+### Background Fetch
 
-### iOS 13, Background Tasks
+- 系统提供了一个新的API，支持在后台拉取数据，并且可以更新UI
+- 这一特性很适合用于内容消费类型的App
+	- 传统的内容刷新可能是有个定时器，在每次用户从后台切换到前台时检查是否刷新
+	- 刷新时用户需要等待
+	- 其实刷新时机可以使用该特性进行提前，这样下次用户进入App时，内容就自动刷新了
+- 对于Social Media、Weather、News、Finance、Blog类型App比较合适
+- 系统会通过学习用户使用手机的习惯，在合适的时机执行BackgroundFetch逻辑
 
-## 总结
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios7-backgroundfetch.png?raw=true)
+
+#### How to use Background Fetch
+
+1. select Background Fetch Mode in project setting
+2. set minmum background fetch interval
+	- `application.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)`
+	- 默认值是`UIApplication.backgroundFetchIntervalNever`，表示不开启Background Fetch
+	- 在AppDelegate的didFinishLaunch中调用即可
+	- 该数值只是给系统的一个参考值，真正的执行Background Fetch的间隔由系统决定
+3. implement AppDelegate中的`func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void)`
+	- 就是核心的数据获取和UI更新逻辑
+	- 任务结束后要执行一些completion告知系统，以使得系统尽快回收资源
+
+#### How to debug Background Fetch
+
+因为Background Fetch由系统管理，调试问题不可忽视。苹果提供了两种方法
+
+1. 可以修改the option of target's scheme，开启Background Fetch，则启动App后将会执行Background Fetch逻辑
+2. Xcode的debug菜单中可以模拟一次Background Fetch
+
+### Remote Notification
+
+也是新增的一个特性
+
+- 支持当有远程推送到达时，系统将应用启动，进入后台，并执行一些逻辑
+- 同时也可以支持slient remote notification
+	- App会收到推送事件，也会进入后台执行逻辑，但并不会有推送信息告知用户
+	- 此时apns消息中需要移除alert字段
+
+> slient remote notification的发送频率是受系统限制的，不能太频繁
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios-background-remotenotification.png?raw=true)
+
+#### 应用场景
+
+场景1：TV App下载Video
+1. App通过slient remote notification在后台下载video
+2. 下载ok后发送local notification告知用户
+3. 用户打开App直接观看
+
+### Backround Fetch vs Remote Notification
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios-backgroundfetch-vs-remotenotification.png?raw=true)
+
+### Background Transfer service
+
+- 其实就是NSURLSession提供了一个专门用于后台下载的类型
+- 使用上和Background Fetch、Remote Notification挺像
+- 也可以与其他的后台技术配合使用
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios-background-transfer-service.png?raw=true)
+
+
+## Background Tasks
+
+WWDC2019中引入了执行Background execution的新框架`BackgroundTasks`
+
+- 引入新框架原因大概是，之前后台任务的API比较离散，使用起来不够统一
+- `BackgroundTasks`则是对不同的后台任务进行了梳理分类，统一了统一的API和使用套路
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios-backgroundtasks-structure.png?raw=true)
+
+- 整体上分为两类任务：BGAppRefreshTask和BGProcessingTask
+	- BGAppRefreshTask是指那些需要获取数据刷新UI的
+	- BGProcessingTask倾向于数据清理等操作
+	- 新增了与BGProcessingTask对应的Background Mode
+	- 对于BGAppRefreshTask，还是使用原来的Background fetch mode即可
+- 工作流程大致如此
+	1. 向BGTaskScheduler注册一个task，提供具体的任务逻辑
+	2. 在合适的时机（一般是进入后台时），创建一个TaskRequest，提交到BGTaskScheduler
+	3. BGTaskScheduler便会根据用户使用手机的习惯，在合适的位置执行这些任务
+
+## 其他
+
+其实我们在Xcode的配置中能发现，还有几个Background mode本文并未提及，这是因为与Background execution的关联不是太大，或者分散在了其他Framework中了。
+
+此处做简要介绍
+
+- Picture in Picture，翻译为画中画，是一个可以让视频以悬浮窗形式，离开App在Home也播放的特性
+
+## Q&A
+1. iOS开发中支持的后台任务，与iPhone系统设置中的Background App Refresh区别是什么
+	- 经过简单的测试发现，在代码中开启BackgroundModes中的Background fetch、Remote notification或Background processing时，系统设置中就会出现该App对应的Background App Refresh选项了
+	- 所以Background App Refresh的意思应该是指那些可能在后台执行任务的总开关
 
 ## 参考
 - [WWDC 2013 Session笔记 - iOS7中的多任务](https://onevcat.com/2013/08/ios7-background-multitask/)
+- [WWDC 2013 PPT-What’s New with Multitasking](https://devstreaming-cdn.apple.com/videos/wwdc/2013/204xex2xvpdncz9kdb17lmfooh/204/204.pdf)
 - [Why is my app getting killed?](https://developer.apple.com/videos/play/wwdc2020/10078/)
+- [Advances in App Background Execution](https://developer.apple.com/videos/play/wwdc2019/707/)
