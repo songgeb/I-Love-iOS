@@ -31,7 +31,7 @@ iOS提供了两个比较高级的多线程技术：GCD和NSOperation
 - 这四个队列主要是优先级不同
 
 ### Serial Dispatch Queue
-- 串行队列，也叫做私有队列
+- 串行队列，一次只执行一个任务，任务的执行顺序按照添加的顺序，也叫做私有队列
 - 主线程关联的main queue也是一个串行队列
 - 可以通过context给queue关联数据，task可以使用这些数据
 - 可以在queue销毁时执行方法以清理数据
@@ -86,10 +86,8 @@ iOS提供了两个比较高级的多线程技术：GCD和NSOperation
 - NSOperation并不依赖NSOperationQueue才能执行
 - 与`Dispatch Queue`的相同点是，也是按照队列的先进先出原则
 - 不同点是，`NSOperationQueue`支持任务间依赖关系
-- queue本身不会主动的remove operation，而是让operation自己remove掉
-- 比如，当这个operation发现被cancel了，那么执行过程中有检查cacel状态的代码，检查不通过直接return了，这样才是真正从queue删掉了。所以才让自定义operation时尽量多的去check各种状态
-- 也就是说cancel并不是直接让operation停止的，间接的
-- 这也解释了，为啥当suspend queue时，即使其中的operation已经被cancel了，也不会被remove掉。因为被suspend了，没有operation继续执行了，所以也就不会走到`间接return`代码了
+- NSOperationQueue不对外提供remov operation的方法，当operation状态变为finished后会自动从queue中移除。但可以通过NSOperation或NSOperationQueue的cancel方法取消任务
+- NSOperationQueue支持suspend，临时暂停新的operation执行，但正在执行的operation仍会继续
 
 ## NSOperation
 
@@ -178,6 +176,8 @@ iOS系统在一些优先级翻转的情况下会尝试提高低优先级任务�
 
 [Thread Safety Summary](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html#//apple_ref/doc/uid/10000057i-CH12-SW1)
 
+## Q&A
+1. OperationQueue与Operation的remove逻辑为何这样设计？
 
 ## 参考
 - [Concurrency Programming Guide](https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html)

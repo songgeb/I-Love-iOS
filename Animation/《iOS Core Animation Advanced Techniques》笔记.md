@@ -114,11 +114,72 @@ kept; anything else is discarded
 - timeOffset不太懂
 
 ## Easing
-- UIView的动画方法默认使用的是kCAMediaTimingFunctionEaseInEaseOut
-- 但若自己创建CAAnimation时，timing fuction默认值是kCAMediaTimingFunctionLinear
-- 
+
+### CAMediaTimingFuction
+
+Core Animation uses easing to make animations move smoothly and naturally instead of seeming robotic and artificial.--Easing Function
+
+> Every physical object in the real world accelerates and decelerates when it moves. So, how do we implement this kind of acceleration in our animations? One option is to use a **physics engine** to realistically model the friction and momentum of our animated objects, but this is overkill for most purposes.
+
+Easing function is represented by `CAMediaTimingFunction`. Two ways to use easing function:
+
+- For `CAAnimation`, set `timingFunction`
+- For implicit animations, use `+setAnimationTimingFunction:` of `CATransaction`
+
+How to create `CAMediaTimingFunction`, simplest way is 
+
+```
+let fn = CAMediaTimingFunction(name: .linear)
+```
+
+name list is:
+
+```
+kCAMediaTimingFunctionLinear
+kCAMediaTimingFunctionEaseIn
+kCAMediaTimingFunctionEaseOut
+kCAMediaTimingFunctionEaseInEaseOut
+kCAMediaTimingFunctionDefault
+```
+
+> Default value of implicit animation's timingFunction is kCAMediaTimingFunctionEaseInEaseOut. Default value of CAAnimation is kCAMediaTimingFunctionLinear
+
+### UIView Animation Easing
+
+```
+UIViewAnimationOptionCurveEaseInOut
+UIViewAnimationOptionCurveEaseIn
+UIViewAnimationOptionCurveEaseOut
+UIViewAnimationOptionCurveLinear
+```
+
+default value of timingFunction is UIViewAnimationOptionCurveEaseInOut
+
+### CAKeyframeAnimation Easing
+
+```
+let animation = CAKeyframeAnimation(keyPath: "backgroundColor")
+animation.duration = 2
+animation.values = [
+      UIColor.blue.cgColor,
+      UIColor.red.cgColor,
+      UIColor.green.cgColor,
+      UIColor.blue.cgColor
+]
+
+let timingFunction = CAMediaTimingFunction(name: .easeIn)
+animation.timingFunctions = [timingFunction, timingFunction, timingFunction]
+```
+
+### Custom Easing Functions
+
+#### The Cubic Bézier Curve
+
+
 
 ## 问题
 1. 经测试，calayer的mask不支持动画
 2. uiview的类，直接修改frame无法产生隐式动画
 3. 一个layer，直接修改animatable property可以自动产生隐式动画。但一个view.layer，直接修改却不行
+4. 如何查看implicit animation的timingFunction
+5. self.layerView.layer.geometryFlipped

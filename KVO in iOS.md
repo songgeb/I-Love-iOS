@@ -1,72 +1,4 @@
-# KVC、KVO笔记
-
-## KVC
-
-KVC，Key-value coding，是一种可以实现对**对象的属性**进行非直接访问的一种方式，这种方式要求对象必须实现`NSKeyValueCoding`协议
-
-`NSObject`实现了`NSKeyValueCoding`协议的方法，所以它的子类可以直接用KVC的方法
-### 常用方法
-```
-// 直接获取或设置属性值
-valueForKey:/valueForKeyPath:
-setValue:forKey:/setValue:forKeyPath:
-// 获取可变类型集合数据方法
-mutableArrayValueForKey:/mutableArrayValueForKeyPath:
-mutableSetValueForKey:/mutableSetValueForKeyPath:
-```
-- 当书写`keyPath`时，第一个属性部分是相对于`message receving object`而言的
-	- `[department valueForKeyPath:@"employee.salary"]`
-	- `employee`是相对于`department`而言
-- 当获取可变的集合类型数据时，得到的是一个代理对象，可以直接对该集合进行操作，操作的结果会传递到真正的非可变集合数据中
-- KVC的方法对对象类型属性和非对象类型属性（如`int`）等同视之
-
-### 集合操作符(CollectionOperator)
-
-当获取集合类型数据时，支持加入集合操作符，这样可以对返回的集合数据进行合并、求平均、求最值等简单操作，最终返回的是计算的结果值
-
-操作符格式是
-
-`keypathToCollection.@collectionOperator.keypathToProperty`
-
-举例
-
-```
-/// 获取交易信息中最早的时间
-NSDate *earliestDate = [self.transactions valueForKeyPath:@"@min.date"];
-
-/// 获取所有交易信息中的交易人（payee）信息，而且交易人不重复
-/// 重复的判断需要`isEqual`方法的支持
-NSArray *distinctPayees = [self.transactions valueForKeyPath:@"@distinctUnionOfObjects.payee"];
-/// 对集合的集合使用操作符
-NSArray* moreTransactions = @[<# transaction data #>];
-NSArray* arrayOfArrays = @[self.transactions, moreTransactions];
-NSArray *collectedDistinctPayees = [arrayOfArrays valueForKeyPath:@"@distinctUnionOfArrays.payee"];
-```
-
-|集合操作符|功能||
-|:-:|:-:|:-:|
-|@count|元素个数|无需keypathToProperty|
-|@avg/@sum|求平均、求和||
-|@max/@min|求最值||
-|@distinctUnionOfObjects|聚合对象，对象不重复||
-|@unionOfObjects|聚合对象，允许重复||
-|@distinctUnionOfArrays|将外层数组中每个数组里的每个对象的属性进行非重复聚合||
-|@unionOfArrays|功能和上面类似，结果有重复||
-|@distinctUnionOfSets|对集合的集合进行非重复聚合|
-
-### KVC原理
-
-本质上，实现了`NSKeyValueCoding`协议的`NSObject`在执行KVC的方法时，就是通过`key`去找匹配的`ivar`（成员变量），然后再进行`get`或`set`
-
-那么最重要的也就是从`key`到`ivar`的查找过程了，官方有做详细说明，但由于都是文字，可能比较晦涩，这里贴上掘金上一个[大佬](https://juejin.im/post/5e5e06ba51882549063a9011)的总结图
-
-[setter](https://songgeb.coding.net/p/resources/d/resources/git/raw/master/kvc_setter.png)
-
-[getter](https://songgeb.coding.net/p/resources/d/resources/git/raw/master/kvc_getter.png)
-
-> 发本文时图片一直转存失败，只能放上两张图片链接了
-
-## KVO
+# KVO in iOS
 
 指定一个对象的某个属性，当该属性值发生变化时，可以通知给其他对象。这个机制就叫做KVO（Key-value observing）
 
@@ -135,7 +67,7 @@ FOUNDATION_EXPORT NSKeyValueChangeKey const NSKeyValueChangeNotificationIsPriorK
 
 `dependent key`是指，有一个属性A（通常是一个`computed property`）的值是由其他1个或多个属性值决定，那这些属性就是A的依赖属性，即为`dependent key`
 
-当使用KVO监听A时，如果依赖属性的值发生变化，我们自然的也收到A变化的通知
+当使用KVO监听A的依赖属性时，如果依赖属性的值发生变化，我们自然也希望收到通知。但默认情况下，系统无法帮我们做到
 
 本小节就是为了解决该问题
 
@@ -194,15 +126,13 @@ FOUNDATION_EXPORT NSKeyValueChangeKey const NSKeyValueChangeNotificationIsPriorK
 
 > 手动和自动是可以并存的，并非只能选择一种实现方式
 
-#### 系统自动KVO
+#### Automatic Change Notification
 
 系统借助KVC特性，在`NSObject`内部做了默认实现
 
-- `NSObject`内部有KVO进行发通知的默认实现
-- 这个默认实现是基于KVC的
-- 因为KVC内部会寻找设置属性或获取属性的方法，在属性发生变化时，`NSObject`的默认实现会第一时间捕捉到，并通知给`Observer`
+- 在属性发生变化时，`NSObject`的默认实现会第一时间捕捉到，并通知给`Observer`
 
-#### 手动KVO
+#### Manual Change Notification
 
 对于一些特殊情况，或者不支持KVC的情况，系统也允许我们手动实现KVO
 
@@ -211,13 +141,41 @@ FOUNDATION_EXPORT NSKeyValueChangeKey const NSKeyValueChangeNotificationIsPriorK
 	`willChangeValueForKey:`和`didChangeValueForKey:`
 - 对于集合类型的属性更改的情况，还要为上面两个方法传入修改的`index`信息
 
-### 疑问
-1. notification.object是啥
-	- 严格讲KVO中没有notification的概念，回调的数据存在一个dictionary中
-	- `observeValueForKeyPath:`有个`object`参数，表示被观察者对象
-2. you're not supposed to override methods in categories.
+### KVO原理
 
-## 参考
+对于Automatic KVO，系统通过`is-a swzzling`技巧实现自动的KVO
+
+- 在注册observer时，系统自动创建另一个class，该class中会加入发送通知的逻辑
+- 被注册的对象的isa指针将指向该class
+- 所以当被观察的属性发生变化时，observer会收到通知
+
+### KVO in Swift?
+
+Automatic Change Notification依赖的是NSObject的默认实现，所以要求参与到KVO的对象必须是NSObject的子类
+
+Manual Change Notification中重写的`+ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key`方法也是NSObject中的
+
+- 所以KVO是依赖NSObject的
+- Swift中NSObject的子类是可以应用KVO的
+- Swift中纯Swift的类不支持KVO（但可以使用属性的willSet和didSet特性）
+
+
+### 应用场景
+
+#### AVFoundation
+
+- 在使用AVFoundation时，有很多的操作，监听progress的方式都是通过KVO的方式
+- 因为其中的操作以异步、耗时操作为主，如果为每个操作都通过delegate、block回调等方式来实现progress通知的话，势必会导致API过多，不好用，所以KVO是个不错的选择
+
+#### Architecture
+
+使用KVO(比如基于KVO实现的KVOController框架)简化代码逻辑
+
+- Cocoa应用程序(mac OS的App)中，Controller和Model之间使用KVO的情形比较多
+
+### QA
+
+
+### 参考
 - [Introduction to Key-Value Observing Programming Guide
-](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html)
-- [Key-Value Coding Programming Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/KeyValueCoding/index.html)
+](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html#//apple_ref/doc/uid/10000177-BCICJDHA)

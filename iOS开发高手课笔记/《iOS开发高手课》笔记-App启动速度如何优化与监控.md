@@ -29,6 +29,8 @@ pre-main refers to the time period from the time when the user taps the App icon
 What can we do to optimize this part?
 
 - avoid linking unused frameworks 
+- limit the number of dynamic library
+	- Apple
 - avoid unecessary `+load` codes  or move codes from `load` to `initialize`
 	- `initialize` is called after `main`
 
@@ -50,9 +52,21 @@ In order to optimize the time
 
 - defer these tasks as much as possible
 
+## How to monitor or measure the time of launch 
+
+- Time Profiler
+
+
 ## Q&A
 - 什么是动态库？启动时都要加载哪些动态库？
+- 如何合并动态库，合并就能提高速度了？
 
 ## References
 - [02 | App 启动速度怎么做优化与监控？](https://time.geekbang.org/column/article/85331)
 - [Optimizing App Launch](https://developer.apple.com/videos/play/wwdc2019/423/)
+- [grab
+/
+cocoapods-pod-merge](https://github.com/grab/cocoapods-pod-merge)
+- [iOS 性能优化 - TimeProfiler分析代码耗时](https://blog.csdn.net/Hello_Hwc/article/details/84311933)
+- [如何精确度量 iOS App 的启动时间](https://www.jianshu.com/p/c14987eee107)
+- [美团外卖iOS App冷启动治理](https://tech.meituan.com/2018/12/06/waimai-ios-optimizing-startup.html)

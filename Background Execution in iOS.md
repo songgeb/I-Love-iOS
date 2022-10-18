@@ -105,7 +105,6 @@ BackgroundTask从策略上进行了一次改变
 
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios-background-transfer-service.png?raw=true)
 
-
 ## Background Tasks
 
 WWDC2019中引入了执行Background execution的新框架`BackgroundTasks`
@@ -131,7 +130,7 @@ WWDC2019中引入了执行Background execution的新框架`BackgroundTasks`
 
 此处做简要介绍
 
-- Picture in Picture，翻译为画中画，是一个可以让视频以悬浮窗形式，离开App在Home也播放的特性
+- Picture in Picture，翻译为画中画，是一个可以让视频以悬浮窗形式，离开App在Home页也播放的特性
 
 ## Q&A
 1. iOS开发中支持的后台任务，与iPhone系统设置中的Background App Refresh区别是什么

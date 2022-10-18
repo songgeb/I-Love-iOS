@@ -174,8 +174,23 @@ print(v1.ref === v2.ref ? "true" : "false")
 
 - [Protocol Types Cannot Conform to Protocols](https://github.com/apple/swift/blob/main/userdocs/diagnostics/protocol-type-non-conformance.md)
 
+## Operator
+
+- [Precedencegroup’s assignment](https://forums.swift.org/t/precedencegroups-assignment/14069)
+
+## Function vs Closure
+
+- [Closures vs. Functions](https://developer.apple.com/forums/thread/43606)
+
+## Variable shadowing
+
+其实就是支持在fnction中定义一个和parameter name相同的变量或常量
+
 ## 疑问
 1. Swift是类型安全语言？类型安全是什么意思？
 2. dynamic关键词的深入理解，以及和@objc合用的注意事项
 3. 写算法时经常碰到的hashMap.keys到底是什么类型，和Array、String之间的关系是什么
 4. 哪些方法有sort方法，都有几种sort方法声明，每种写法如何
+
+## 参考
+- [What is new in Swift5](https://www.raywenderlich.com/55728-what-s-new-in-swift-5)
