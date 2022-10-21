@@ -175,7 +175,164 @@ animation.timingFunctions = [timingFunction, timingFunction, timingFunction]
 
 #### The Cubic Bézier Curve
 
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Animation/Images/animation_cubicgraph.png?raw=true)
 
+custom timingfunction below:
+
+```
+let timgFn = CAMediaTimingFunction(controlPoints: 1, 0, 0.75, 1)
+```
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Animation/Images/customtimingfunction.png?raw=true)
+
+#### More complex animation curve
+
+bounce animation. Consider a rubber ball dropped onto a hard surface: When dropped, it will accelerate until it hits the ground, bounce several times, and then eventually come to a stop.
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Animation/Images/bounceanimation_animationcurve.png?raw=true)
+
+This effect can not be represented by a single cubic Bezier curve. But we have other options:
+
+- Use CAKeyFrameAnimation, split aniamtion into several steps, each with its own timing function
+- Implement animation using a timer to update each frame
+
+#### Automating the Process
+
+对于前面比较复杂的动画，虽然可以用CAKeyFrameAnimation实现，但计算过程比较繁琐，不易复用。有什么办法让这个过程更简便易用？
+
+我们可以将一个动画想象成无数个片段，每两个片段之间其实可以认为是线性变化的一个动画，组合起来就是最终动画了。每一个片段可以看做CAKeyFrameAnimation的每个KeyFrame，所以可以用CAKeyFrameAnimation来实现，那么关键问题就是：
+
+- 分成多少个片段
+- 每个片段是什么
+
+至于片段数，可以分成 duration(second) *  60，按照一秒60帧来分；每一个片段的内容要通过插值函数获得，这个插值函数已经有前人提供了--[Robert Penner's Easing Functions](http://robertpenner.com/easing/)
+
+## Timer-Based Animation
+
+### Frame Timing
+
+可以使用`NSTimer`, `CADisplayLink`来尝试准备每一帧的内容，来模拟动画
+
+### Physical Simulation
+
+还可以通过物理引擎(physics engine)来创建与实际生活中关联更紧密，更能模拟现实生活物体的动画
+
+## Tuning for Speed
+
+Most animation performance optimization is about intelligently utilizing the GPU and CPU so that neither is overstretched. To do that, we first have to understand how Core Animation divides the work between these processors.
+
+### CPU VS GPU
+
+#### The stages of animation
+
+- Layout—This is the phase where you prepare your view/layer hierarchy and set up the properties of the layers (frame, background color, border, and so on).
+
+- Display—This is where the backing images of layers are drawn. That drawing may involve calling routines that you have written in your -drawRect: or -drawLayer:inContext: methods.
+
+- Prepare—This is the phase where Core Animation gets ready to send the animation data to the render server. This is also the point at which Core Animation will perform other duties such as decompressing images that will be displayed during the animation (more on this later).
+
+- Commit—This is the final phase, where Core animation packages up the layers and animation properties and sends them over IPC (Inter-Process Communication) to the render server for display.
+
+then, the render server does following things for each frame:
+
+- Calculates the intermediate values for all the layer properties and sets up the OpenGL geometry (textured triangles) to perform the rendering
+- Renders the visible triangles to the screen
+
+The first five work is done on CPU side, the last work is handled by GPU.
+
+### Measure, Don’t Guess
+
+Use Instruments
+
+## Efficient drawing
+
+### Software drawing
+
+The term drawing is usually used in the context of Core Animation to mean software drawing (that is, drawing that is not GPU assisted). Software drawing in iOS is done primarily using the Core Graphics framework, and while sometimes necessary, it’s really slow compared to the hardware accelerated rendering and compositing performed by Core Animation and OpenGL.
+
+应避免Software drawing，即占内存又慢
+
+But as soon as you implement the CALayerDelegate -drawLayer:inContext: method or the UIView -drawRect: method (the latter of which is just a wrapper around the former), an offscreen drawing context is created for the layer, and that context requires an amount of memory equal to the width × height of the layer (in pixels, not points) × 4 bytes. For a full- screen layer on a Retina iPad, that’s 2048 × 1536 × 4 bytes, which amounts to a whole 12MB that must not only be stored in RAM, but must be wiped and repopulated every time the layer is redrawn.
+
+### Vector Graphics
+
+Vector Graphics叫做矢量图形
+
+> 矢量图形可以大致这样理解，可以通过数学等式绘制出来的图形。相比于传统的图片，由于可以通过数学等式计算出来，所以矢量图形可以做到缩放不失真
+
+之所以会用到Core Graphics去绘制图形，很大原因是可以绘制Vector Graphics，其中包括：
+
+- Arbitrary polygonal shapes (anything other than a rectangle) 
+- Diagonal or curved lines
+- Text
+- Gradients
+
+通过使用硬件加速的图形绘制技术能够提高新能：
+
+- 绘制多边形时可以优先选择CAShapeLayer(内部使用硬件加速进行优化)
+	- 通过简单的绘图应用试验可知，使用Core Graphics实现的CPU和内存占用明显高于CAShapeLayer
+- 另外还有CATextLayer和CAGradientLayer
+
+### Dirty Rectangles
+
+- setNeedsDisplayInRect:
+
+### Asynchronous Drawing
+
+- CATileLayer
+- layer.asynchronousDrawing
+
+## Image IO
+
+### Loading and Latency
+
+- flash storage is faster than traditional hard disk
+- but around 200 times slower than RAM
+
+### Threaded loading
+
+- Scrolling animations are updated on the main run loop, and are therefore more vulnerable to CPU-related performance issues than CAAnimation, which is run in the render server process.
+
+### Deferred Decompression
+
+### Resolution Swapping
+
+- When you observe a moving image, your eye is much less sensitive to detail, and a lower-resolution image is indistinguishable from Retina quality.
+
+### Caching
+
+### File Format
+
+- jpng
+
+## Layer Performence
+
+### Inexplicit Drawing
+
+But in addition to explicitly creating a backing image, you can also create one implicitly through the use of certain layer properties, or by using particular view or layer subclasses.
+
+It is important to understand exactly when and why this happens so that you can avoid accidentally introducing software drawing if it’s not needed.
+
+#### Text
+
+#### Rasterization
+
+- Color Hits Green and Misses Red
+
+### Offscreen Rendering
+
+#### use CAShapeLayer to rounded corner
+
+#### Stretchable Images
+
+- circular image combined with `contentCenter` property
+
+#### Blending and Overdraw
+
+### Reducing Layer Count
+
+- Object Recycling
+- Core Graphics Drawing
 
 ## 问题
 1. 经测试，calayer的mask不支持动画
@@ -183,3 +340,12 @@ animation.timingFunctions = [timingFunction, timingFunction, timingFunction]
 3. 一个layer，直接修改animatable property可以自动产生隐式动画。但一个view.layer，直接修改却不行
 4. 如何查看implicit animation的timingFunction
 5. self.layerView.layer.geometryFlipped
+6. 通过CoreGraphics画图，每次path变化都要重绘，性能不好，有什么办法优化吗？
+	- CAShapeLayer好在哪？
+7. Vector Graphics与刚体变换区别？
+8. CATileLayer好在哪
+9. UILabel使用什么技术渲染文字
+10. Core Graphics vs Core Animation
+
+## 参考
+- [Improving Image Drawing Performance on iOS](https://developer.apple.com/library/archive/qa/qa1708/_index.html)

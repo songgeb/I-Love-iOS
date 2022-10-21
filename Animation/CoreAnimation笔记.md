@@ -1,11 +1,12 @@
-## 笔记
+## Core Animation笔记
 
 动画其实就是在`1/60`(s)时间内准备每一帧图片，就形成了不卡顿的动画。我们不需要自己准备，`CoreAnimation`为我们做了
 
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Animation/Images/ca_architecture.png?raw=true)
+
 ## layer
 
-- layer本身并不进行绘制操作
-- layer会持有要进行绘制的内容，比如一个`UIImage`对象
+- layer是渲染内容显示的载体，真正要显示的内容其实是其背后的bitmap或指定的image
 - layer的backing store，指的是一块用于存储要通过GPU进行绘制的bitmap的内存部分
 - 官方没说，但从[Getting Pixels onto the Screen](https://www.objc.io/issues/3-views/moving-pixels-onto-the-screen/)这里可以知道，并不是所有情况下会开辟backing store这块内存的。比如这个layer要显示一张图片（content设置为CGImage），就不会额外开辟内存，绘制内容时直接将CGImage交给了GPU；但若重写了drawRect方法，便会开辟这块内存
 - 我想可能官方所说的backing store不只是额外开辟的这块内存，也包括了CGImage这种内容
@@ -13,15 +14,15 @@
 	- UIView的layer会自动将试图本身作为layer的delegate
 
 ### anchorpoint、position、frame
-1. layer的所有变换都是基于anchorpoint。
-2. 关于anchorPoint
+1. layer的所有变换都是基于anchorpoint
+2. frame是个function value，由anchorPoint、position、bounds和transform共同决定
+3. 关于anchorPoint
     - 一个layer的anchorpoint是(0, 0) -> (1,1)的范围来表示
     - anchorPoint是transform的支点
     - 一个layer的anchorpoint是基于当前layer的坐标系的，比如(0.5, 0.5)就是layer的中心
     - 一个layer的position，这个position点其实始终和anchorpoint重合的。但它的值则是`anchorPoint所在的位置`基于`superlayer坐标系`的坐标值。
     - 对anchorPoint和position的理解可以参考白纸、桌子和图钉的故事--[彻底理解position与anchorPoint](http://wonderffee.github.io/blog/2013/10/13/understand-anchorpoint-and-position/).
     - 修改anchorPoint不会改变position的值，反之亦然。(代码试验得出)
-    - frame是个function value，由anchorPoint、position、bounds和transform共同决定
     - `layer.position.x = layer.frame.origin.x + layer.anchorPoint.x * layer.bounds.size.width` (同理y值也是如此，其实公式中缺少了transfrom的因素，如果不考虑transform的话这样是没问题的)
     - 有几个常见的问题
         1. 修改position会不会影响anchorpoint？反之呢？---不影响，代码试验为证。
@@ -81,11 +82,13 @@
 #### 简单动画
 简单动画并非某种特定动画类型，而是相对容易实现、简单地修改几个属性就能实现的动画。
 
-简单动画可以有两种实现方式：exlicit（创建`CABasicAnimation`对象添加到layer上）和implicit（隐式动画，即修改layer的可支持动画的属性如`opacity`，自动产生动画效果）
+简单动画可以有两种实现方式：explicit（创建`CABasicAnimation`对象添加到layer上）和implicit（隐式动画，即修改layer的可支持动画的属性如`opacity`，自动产生动画效果）
 
 1. explicit动画完成之后，animation对象从layer中删除，不会更新layer tree中对象的值，而是使用当前值（即初始值）重绘一遍，就又回到动画初始状态。所以，要记得在创建动画之后，把动画的最终值设置给layer tree对象。
 2. explicit或implicit动画会执行在当前线程的runloop中，所以当前线程一定要有runloop。
 3. 动画执行的时机是，当前线程runloop的下次更新cycle。所以如果设置多个动画属性值时，多个动画会一起执行。
+
+- [Animatable Properties](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CoreAnimation_guide/AnimatableProperties/AnimatableProperties.html#//apple_ref/doc/uid/TP40004514-CH11-SW1)
 
 #### Keyframe Animation
 
@@ -164,12 +167,21 @@
 
 1. 见到了一次UIView.animation的compltion中，isFinish是false的情况。
     - vc1的viewdidload中进行动画，但vc1进入的瞬间，push进了vc2
-1. 当创建layer，添加动画代码串行的写时，就看不出动画效果了；但是如果使用basicaniamtion，设置了begin和end后，就又work了---原因还不是特别清楚
-1. 如果要将两个动画先后顺序串起来，官方推荐通过设置`beginTime`属性实现，不建议用上面方法
-1. coreanimation将view内容缓存到bitmap中，这样底层绘画硬件就可以直接操作了。
-2. ca整个流程和view-based drawing一大不同点是，view-based的绘画要调用drawRect方法，且在主线程中操作，很耗资源；而ca的是在硬件中处理缓存好的bitmap，效率高。
-1. 设置layer的背景色时，如果使用pattern images时，Core Graphic使用的坐标系正好和默认的是相反的。要注意
-2. 仿射变换是指的从一个坐标系的(x,y)映射到另一个坐标系的(x',y')吗？前后基于两个坐标系吗？
+2. 当创建layer，添加动画代码串行的写时，就看不出动画效果了；但是如果使用basicaniamtion，设置了begin和end后，就又work了---原因还不是特别清楚
+3. 如果要将两个动画先后顺序串起来，官方推荐通过设置`beginTime`属性实现，不建议用上面方法
+4. coreanimation将view内容缓存到bitmap中，这样底层绘画硬件就可以直接操作了。
+5. ca整个流程和view-based drawing一大不同点是，view-based的绘画要调用drawRect方法，且在主线程中操作，很耗资源；而ca的是在硬件中处理缓存好的bitmap，效率高。
+6. 设置layer的背景色时，如果使用pattern images时，Core Graphic使用的坐标系正好和默认的是相反的。要注意
+7. 仿射变换是指的从一个坐标系的(x,y)映射到另一个坐标系的(x',y')吗？前后基于两个坐标系吗？
+8. 通过scale、rotate等操作后，layer的frame和bounds有没有变
+9. layer.transform，transform支持哪些变换类型
+
+### UIScrollView的滚动和手动添加的CAAnimation有什么区别？
+
+- UIScrollView的滚动动画是基于Runloop，在主线程中实现的
+- CAAnimation则是依赖CoreAnimation，将动画任务提交到独立于Application的Render Server由GPU实现的
+
+### CoreAnimation与Core Graphics区别
 
 ## 好的练习题
 - [How To Make a Custom Control Tutorial: A Reusable Knob](https://www.raywenderlich.com/5294-how-to-make-a-custom-control-tutorial-a-reusable-knob)
