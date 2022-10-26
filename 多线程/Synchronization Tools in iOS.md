@@ -1,6 +1,8 @@
 # Synchronization Tools in iOS
 
 
+多线程中解决共享资源竞争的同步工具有lock, condition, atomic operation, etc.
+
 锁是解决多线程安全问题的一个常见手段
 
 ## 自旋锁
