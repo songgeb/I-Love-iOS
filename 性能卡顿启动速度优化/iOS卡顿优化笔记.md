@@ -32,6 +32,29 @@ iOS 的显示系统是由 VSync 信号驱动的，VSync 信号由硬件时钟生
 
 Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting 和 Exit 事件。这个 Observer 的优先级是 2000000，低于常见的其他 Observer。当一个触摸事件到来时，RunLoop 被唤醒，App 中的代码会执行一些操作，比如创建和调整视图层级、设置 UIView 的 frame、修改 CALayer 的透明度、为视图添加一个动画；这些操作最终都会被 CALayer 捕获，并通过 CATransaction 提交到一个中间状态去（CATransaction 的文档略有提到这些内容，但并不完整）。当上面所有操作结束后，RunLoop 即将进入休眠（或者退出）时，关注该事件的 Observer 都会得到通知。这时 CA 注册的那个 Observer 就会在回调中，把所有的中间状态合并提交到 GPU 去显示；如果此处有动画，CA 会通过 DisplayLink 等机制多次触发相关流程。
 
+### CPU卡顿 vs GPU卡顿
+
+从上面的VSync号和CPU、GPU任务的图中能看出来，以下三种情况都会导致掉帧：
+
+- CPU任务时间超过两个VSync时间间隔
+- GPU任务超过时间间隔
+- CPU+GPU任务超过时间间隔
+
+前两种情况就是此处要说的CPU卡顿和GPU卡顿
+
+下图是京东卡顿治理中的例子，CPU的fps很正常，GPU的fps却很低，所以整体仍是掉帧甚至是卡顿明显的
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/jd_cpustuck_gpustuck.gif?raw=true)
+
+为啥分开统计呢？
+
+因为没办法一起统计啊，iOS的渲染流程决定的
+
+大致是这样的流程：
+
+1. CPU负责计算各种布局、自定义绘制等工作，完成后将渲染任务通过CoreAnimation提交给GPU。注意这些工作是在CPU侧，也是在主线程中完成
+2. 提交给GPU后，GPU负责图层的合成等计算，再最终由显示器显示。该部分跟主线程和CPU就没关系了
+
 ## 如何解决卡顿
 
 ### CPU方面
@@ -49,9 +72,16 @@ Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting
 
 ### 衡量卡顿
 
+#### 字节
 下图为字节监控卡顿时所采用的标准，供参考
 
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/stuck_benchmark.png?raw=true)
+
+#### 京东
+
+京东商城的卡顿监控结合与具体的业务属性提出了卡顿率的概念
+
+`页面卡顿率=该页面存在卡顿的上报数之和/页面总上报量`
 
 ### 基于runloop
 
@@ -87,6 +117,8 @@ Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting
 
 另外，真实商业级别的实践中，远比本文提到的理论要复杂。比如参考文档中微信、字节在已有卡顿监控基础上做了很多提升性能、提高卡顿识别准确率的优化
 
+根据参考文档中不同公司的卡顿方案分享来看，京东的卡顿监控策略与业务关联更紧密，值得深入研究
+
 ### 参考
 - [字节跳动 iOS Heimdallr 卡死卡顿监控方案与优化之路](https://blog.51cto.com/u_15204236/4960735)
 - [Matrix-iOS 卡顿监控](https://cloud.tencent.com/developer/article/1427933)
@@ -102,6 +134,7 @@ Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting
 
 #### CADisplay实现的FPS为什么只能监控CPU卡顿
 
+### others
 2. 什么是异步绘制
 4. 有没有直观的方法来查看或验证UI或动画的布局、提交、绘制过程？
 5. 仅通过监控FPS，能否准确捕捉到卡顿
