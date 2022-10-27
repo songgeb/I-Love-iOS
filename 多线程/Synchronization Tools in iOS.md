@@ -42,7 +42,7 @@
 	- 但一旦出现优先级反转问题，自旋锁会让优先级反转问题不容易解决，甚至造成更严重的线程等待问题
 
 
-### atomic和os_unfair_lock
+### atomic和os\_unfair_lock
 
 - OSSpinLock被废弃后，官方建议使用os_unfair_lock代替；
 - os_unfair_lock其实是互斥锁（参考资料中有提到）
