@@ -68,6 +68,12 @@ Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting
 - 减少离屏渲染
 - 避免过大图片，大纹理比较占用显存
 
+### Instrument调试
+
+官方关于优化卡顿，提升用户体验方面有专门的内容，建议多参考
+
+建议参考[Improving app responsiveness](https://developer.apple.com/documentation/xcode/improving-app-responsiveness)
+
 ## 监控卡顿
 
 ### 衡量卡顿

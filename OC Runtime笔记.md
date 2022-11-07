@@ -62,6 +62,8 @@ objc_getMetaClass(Class) is -> 0x10fa70b08
 };`
 	- 类对象和元类都是单例
 
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/instance_class_metaclass.png?raw=true)
+
 ### ivar的值存在哪里
 
 之所以有这个疑问是因为，从OC实例、类对象、元类的C结构体来看，搞不明白一个实例的成员变量的值在哪里，因为在类对象中只是存储了ivar的name和type
