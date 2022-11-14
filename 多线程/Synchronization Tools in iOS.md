@@ -87,6 +87,8 @@
 
 ## 疑问
 1. iOS中锁是如何分类的，每种的特点、限制和应用场景是什么
+2. 为何要有递归锁，什么场景下会用到递归锁
+3. 为啥这么多种锁，不同的应用场景是啥
 2. NSConditionLock、NSCondition、NSLock、NSRecursiveLock
 
 ### 参考
@@ -100,3 +102,4 @@
 - [iOS——GCD的死锁案例](https://cloud.tencent.com/developer/article/1198721)
 	- 里面有几个死锁的demo
 - [Thread Safety in Swift](https://swiftrocks.com/thread-safety-in-swift)
+- [白夜追凶，揭开iOS锁的秘密](https://mp.weixin.qq.com/s?__biz=MzUyMDAxMjQ3Ng==&mid=2247489265&idx=1&sn=2de47017e2862817456c48df211787fa&source=41#wechat_redirect)

@@ -7,10 +7,10 @@
 
 这是一个很好的面试题，主要考察了候选人是否有一定的开发经验和对代码质量的追求
 
-- 对于没多少开发经验的人，可能都不太清楚题目中提到的场景；
+- 对于没多少开发经验的人，可能都不太清楚题目中提到的场景
 - 对技术热爱、感兴趣的同学在遇到这种情况时很可能会思考，常规的异步多任务代码写起来比较啰嗦，可读性会严重下降，从而会促使开发者进一步思考如何改进该问题
 
-举个不太优雅的例子
+举个使用iOS原生block回调实现多异步任务串行的例子
 
 ```
     let urlsession = URLSession(configuration: .default)
@@ -18,7 +18,7 @@
     let task = urlsession.dataTask(with: request) { data, _, _ in
       urlsession.dataTask(with: request) { data, _, _ in
         urlsession.dataTask(with: request) { data, _, _ in
-          //
+          // logical code
         }
       }
     }
@@ -50,15 +50,9 @@
 - 一个完整的操作必定是
 	- 由某处发起一个任务
 	- 任务产生了一些数据(信号)，经过不同阶段的处理最终产出结果数据(信号)
-- 这些框架基于这种思想，将上一节中的所有事件回调方式都做了封装，统一了事件回调方式
+- 这些框架基于这种思想，将上一节中的所有事件回调方式都做了封装，统一了事件回调方式，比如都通过block回调的形式来执行所有的异步任务
 
-对应到该题目中
-
-- 不同的异步任务可以认为是数据(信号)经过的不同阶段的处理
-
-所以我认为，可以模拟响应式编程的思路
-
-来看下一个RxSwift如何创建和使用的
+来看下一个RxSwift如何将异步任务串行起来的
 
 ```
   let observable = Observable<String>.create { observer in
@@ -79,9 +73,9 @@
 
 通过注释能更清晰的了解到
 
-- 先创建了一个任务，其中可以做同步或异步的事情，事情做完后通过onNext通知给后面接收数据进行处理的对象
-- 通过map方法对上面的数据又了一些处理
-- 第三部分，接收最终数据做后序工作
+- 例子中一共执行了两个任务，先创建了一个任务，其中可以做同步或异步的事情，事情做完后通过onNext通知给后面接收数据进行处理的对象
+- 通过map方法承接第二个任务，对上面的数据做了一些处理
+- 最后，接收最终数据做后续工作
 
 其实，除了RxSwift，还有专门针对简化异步任务的框架--PromiseKit，相比RxSwift它更精简，专注于简化异步任务，更适合解决该问题
 
@@ -124,7 +118,6 @@ firstly {
 我们以如下简单的代码示例来介绍其设计思想
 
 ```
-    // 1
     let task1 = Promise { seal in
       seal.resolve(.fulfilled(1))
     }
@@ -197,7 +190,6 @@ func then<U: Thenable>(on: DispatchQueue? = conf.Q.map, flags: DispatchWorkItemF
 	3. check下.resolved中的Result<T>数据
 		- 如果是.fullfilled数据，则**异步**执行then对应的block的内容，得到一个新的任务Promise--rv；
 		- 后序通过rv.pipe(to: rp.box.seal)，将rv和rp绑定起来，即rv有结果后会立即将结果传递给rp
-		- 如果是.reject数据，
 3. 该方法最后会将rp作为返回值返回给调用方
 
 为了更清晰地解释多个任务的执行、串联过程，我们根据上面简单的示例，画出Promise的内部结构图来看下变化：
@@ -211,6 +203,7 @@ let task1 = Promise { resolver in
 ```
 
 内部做了两件事情：
+
 - 先创建一个初始状态的Promise
 - 然后执行该Promise对应的任务内容
 
