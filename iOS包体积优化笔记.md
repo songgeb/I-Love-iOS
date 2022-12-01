@@ -30,14 +30,25 @@
 
 ![](https://docs-assets.developer.apple.com/published/18e290971c5b775a3c34264f44a972c6/doing-basic-optimization-to-reduce-your-app-s-size-1@2x.png)
 
+- file assets
+	- using asset files instead of putting the data into your code
+	- such as, use a property list for bundling any data with your app instead of using strings in code
+
 ![](https://docs-assets.developer.apple.com/published/b1a7494fa1ea9b2f09cd33a1f2d74702/doing-advanced-optimization-to-further-reduce-your-app-s-size-1@2x.png)
+
+- Reduce the size of app updates
+	- 系统在从App Store中更新App时，不总是下载完整App而是会更新update package
+	- 减少不必要的修改，会降低update package的大小
+- on-demand resoures
+	- 将不常用或需购买使用的资源延迟提供
+	- 既可以通过苹果提供的延迟提供机制，也可以通过自己的服务器延迟下载
 
 ### LinkMap
 
 依赖Xcode链接程序时生成的LinkMap文件：
 
 - 其中描述可执行文件的构成
-- 根据其中的信息能够直到不同模块，不同类在可执行文件的大小
+- 根据其中的信息能够知道不同模块，不同类在可执行文件的大小
 
 ## 难点
 
@@ -50,6 +61,7 @@
 	- 我理解OTA跟WIFI不是对等且相反的概念吧？
 3. WebP比PNG、JPG好在哪
 4. HEIC比WebP好在哪
+5. 官方文档中提到一个场景：对于用户引导这种feature，明显是不常用的，如何通过苹果官方的机制来延迟下载使用呢？
 
 ## 参考
 - [iOS微信安装包瘦身](https://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&mid=207986417&idx=1&sn=77ea7d8e4f8ab7b59111e78c86ccfe66&scene=24&srcid=0921TTAXHGHWKqckEHTvGzoA#rd)

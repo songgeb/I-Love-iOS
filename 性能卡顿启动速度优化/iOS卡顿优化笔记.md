@@ -78,6 +78,20 @@ Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting
 
 ### 衡量卡顿
 
+#### Apple
+
+苹果官方对于小的卡顿（而非卡死）叫做"Hitch"。并使用使用hitch ratio来衡量卡顿的严重性
+
+`hitch ratio = hitch time / duration`
+
+- hitch time表示因为CPU或GPU任务无法按时完成，导致屏幕无法更新Frame的时长，如下图的情况，hitch time就是2个16.6ms(红色区域)
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/hitch_time.png?raw=true)
+
+hitch ratio相比hitch time更具有可比性，在不同刷新率设备和不同程序运行时长下都是可行的
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/hitch_ratio.png?raw=true)
+
 #### 字节
 下图为字节监控卡顿时所采用的标准，供参考
 
@@ -165,8 +179,10 @@ double actualFramesPerSecond = 1 / (displaylink.targetTimestamp - displaylink.ti
 所以猜测，官方此处给的fps，和我们平常理解的有些出入
 
 ## 参考
+- [Explore UI animation hitches and the render loop-WWDC](https://developer.apple.com/videos/play/tech-talks/10855/)
 - [天罗地网？ iOS卡顿监控实战（开源）](https://juejin.im/post/5db65fe0e51d452a1e58f37c)
 - [卡顿产生的原因和解决方案](https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios/)
 - [Improving app responsiveness](https://developer.apple.com/documentation/xcode/improving-app-responsiveness)
 - [iOS Core Animation: Advanced Techniques](https://www.oreilly.com/library/view/ios-core-animation/9780133440744/)
 - [Tencent/matrix](https://github.com/Tencent/matrix)
+- [iOS 列表滑动的卡顿检测和优化](https://juejin.cn/post/7018601113855197198)

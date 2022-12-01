@@ -142,6 +142,9 @@ task = [Task startWithBlock:^{
 
 doOthering中的block在capture外部self时，肯定选择当前代码块下的self，当前的self是一个strong的self，所以capture后，block也会强持有self
 
+## 疑问
+- 谁在什么时机释放block对象？比如对于堆上的对象，谁来释放
+
 ## 参考
 - [Blocks (C language extension)](https://en.wikipedia.org/wiki/Blocks_%28C_language_extension%29)
 - [Blocks Programming Topics](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Blocks/Articles/00_Introduction.html#//apple_ref/doc/uid/TP40007502-CH1-SW1)

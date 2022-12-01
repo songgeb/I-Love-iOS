@@ -2,9 +2,11 @@
 
 > 这是我早先实现的一个自定义横滑组件，本文回顾一下当时实现过程遇到的问题和细节，最后有源码地址
 
+> 文中所有图片托管在Github上
+
 所谓横滑组件其实就如图所示的效果：
 
-![]()
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Opensource/Slide/slider_secretscrollview.gif?raw=true)
 
 列一下UI上的要求：
 
@@ -30,7 +32,7 @@ collectionView.contentInset = UIEdgeInset(0,16,0,0)
 
 效果如下所示：
 
-![]()
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Opensource/Slide/slider_pageenable.gif?raw=true)
 
 显然，没有达到预期：
 
@@ -43,7 +45,7 @@ collectionView.contentInset = UIEdgeInset(0,16,0,0)
 
 我画了一张图来表示要实现的效果：
 
-![]()
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Opensource/Slide/slider_pageoffset.png?raw=true)
 
 - 根据上图的效果，我们希望的效果是每次移动cell时移动的距离(两条红竖线之间的距离)是一个cell的宽度+cell之间的距离--cell.width+interval
 - 既然pageEnable特性每次移动的距离一定是scrollView.width，所以我们可以让scrollView.width = cell.width+interval
@@ -63,7 +65,7 @@ collectionView.contentInset = UIEdgeInset(0,0,0,interval) // 这一句可能会�
 
 来看一下效果：
 
-![]()
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Opensource/Slide/slider_pageenable_1.gif?raw=true)
 
 哇，好像不错！但还是有问题：
 
@@ -92,11 +94,11 @@ collectionView.contentInset = UIEdgeInset(0,0,0,interval) // 这一句可能会�
 
 再放一下效果
 
-![]()
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Opensource/Slide/slider_secretscrollview.gif?raw=true)
 
 结论是：✅
 
-源码地址：[]()
+源码地址：[SlideView.swift](https://github.com/songgeb/I-Love-iOS/blob/master/Opensource/Slide/SlideView.swift)
 
 ### 优缺点
 

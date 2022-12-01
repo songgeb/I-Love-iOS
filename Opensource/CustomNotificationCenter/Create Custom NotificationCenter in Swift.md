@@ -106,3 +106,4 @@ func removeObserver(_ observer: AnyObject,
 
 ## 参考
 - [iOS源码解析: NotificationCenter是如何实现的?](https://juejin.cn/post/6844904129580498957#heading-15)
+- [iOS NSNotificationCenter与自定义通知的封装（PSSNotificationCenter）](https://www.jianshu.com/p/c67985411b1e)

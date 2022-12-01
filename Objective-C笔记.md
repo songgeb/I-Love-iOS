@@ -93,5 +93,8 @@ NSLog(@"%%"); //正确姿势，且适用于`print`和Swift的String方法
 
 - [NSMapTable: more than an NSDictionary for weak pointers](http://www.cocoawithlove.com/2008/07/nsmaptable-more-than-nsdictionary-for.html)
 
+### NSHashTable
+
+
 ## 参考
 - [Programming with Objective-C](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html#//apple_ref/doc/uid/TP40011210)
