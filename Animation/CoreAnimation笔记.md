@@ -15,6 +15,7 @@
 
 ### anchorpoint、position、frame
 1. layer的所有变换都是基于anchorpoint
+	- 哪些变换是基于anchor
 2. frame是个function value，由anchorPoint、position、bounds和transform共同决定
 3. 关于anchorPoint
     - 一个layer的anchorpoint是(0, 0) -> (1,1)的范围来表示

@@ -2,6 +2,12 @@
 
 UIKit中各UI控件备忘录
 
+## UIVisualEffectView
+
+
+- [UIVisualEffectView Tutorial: Getting Started](https://www.kodeco.com/16125723-uivisualeffectview-tutorial-getting-started)
+- [3 Approaches to Applying Blur Effects in iOS](https://betterprogramming.pub/three-approaches-to-apply-blur-effect-in-ios-c1c941d862c3)
+
 ## UICollectionView
 - `reloadItemsAtIndexPaths`执行时默认是有fade动画
 - `reloadData`则不会
