@@ -1,8 +1,18 @@
-# library, framework in iOS--part1
+# Library, Framework in iOS--Part1
 
 > 深入理解代替单纯记忆
 
 本文示例使用的Xcode版本为13.4.1 
+
+发现该部分内容还挺多的，先写第一部分，后序的有时间再搞：
+
+- part1：主要介绍基本的概念
+- 后序：尝试利用第一部分的基础概念
+	- XCFramework
+	- 理解Cocoapods对library的做了什么处理
+	- 编译加速
+
+> 强烈推荐阅读参考文献的第一篇
 
 ## 问题与目标
 
@@ -116,44 +126,39 @@ library翻译成中文可以叫做“代码库”或“库文件”
 
 ## Library vs Framework
 
-从上面的理论和实践可以看出，虽然理论上存在static library, dynamic library, static framework, dynamic framework
+- 虽然理论上存在static library, dynamic library, static framework, dynamic framework，但实际可以使用或者常用的是static library, static framework和dynamic framework(embed)
+- Framework相比于Library，它只是一种特殊的文件组织形式的目录，并不影响内部Library的链接方式
 
-- Framework相比于library，它只是一种特殊的文件组织形式的目录，并不影响内部library的链接方式
+## 工具
 
-## 如何让library同时支持多个架构
+#### 如何查看一个framework或library是静态库还是动态库
 
+```
+file CalendarControl.framework/CalendarControl
 
+// 动态库
+CalendarControl.framework/CalendarControl: Mach-O 64-bit dynamically linked shared library x86_64
 
-## App Size, App start time
+// 静态库
+CalendarControl.framework/CalendarControl: current ar archive
+```
 
-## Cocoapods中如何管理不同的library
+#### 如何查看一个framework或library支持的架构
 
-## 其他
+`xcrun -sdk iphoneos lipo -info $(FILENAME)`
 
-## target membership
-1. 对于工程中的每个文件，这是Xcode的一个选项
-2. 这个选项和target一一对应，如果选中则表示该文件是某个target的成员
-3. 成为某个target成员，表示编译运行的时候，这个文件要作为源文件、资源文件（比如image），放到最终的app bundle中
-4. 之所以header文件不能选择放到membership中，是因为头文件都是要在.m文件中引用的，在正式编译的时候其实头文件内容已经到.m文件中了。就没有必要重复的再往membership中放一次了
+```
+xcrun -sdk iphoneos lipo -info CalendarControl.framework/CalendarControl 
 
-https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/XcodeBuildSystem/000-Introduction/Introduction.html#//apple_ref/doc/uid/TP40006904
+Non-fat file: CalendarControl.framework/CalendarControl is architecture: x86_64
+```
 
-## 疑问
-2. 在接入一些代码库时，需要配置`header search path`或`Framework search path`，为什么？
-3. podfile中的`useframework`什么意思
-4. 动态库相比静态库的优势在哪
-4. 如何使用系统Framework
-	- 为什么像`UIKit`这种动态库不需要在Xcode中额外链接
-5. target membership是什么？为什么头文件、info.plist等文件不属于target membership.
-6. cocoapods是如何管理library的
-7. 怎么使用一个static library
-8. 如何查看library架构
-9. 如何查看动态库还是静态库
-	- xcrun -sdk iphoneos lipo -info $(FILENAME)
-10. 什么是umbrella header
-11. 有没有static framework？
+## Debug
+
+[Embedding Frameworks In An App](https://developer.apple.com/library/archive/technotes/tn2435/_index.html)文档列出了创建和配置自定义Framework时常见的一些错误和解决方案
 
 # 参考文档
+- [Introduction to static and dynamic, libraries and frameworks on iOS (and macOS)](https://bpoplauschi.github.io/2021/10/24/Intro-to-static-and-dynamic-libraries-frameworks.html)
 - [Dynamic Library Programming Topics](https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/OverviewOfDynamicLibraries.html)
 - [Embedding Frameworks In An App](https://developer.apple.com/library/archive/technotes/tn2435/_index.html)
 - [Library? Static? Dynamic? Or Framework? Project inside another project](https://stackoverflow.com/questions/15331056/library-static-dynamic-or-framework-project-inside-another-project)
