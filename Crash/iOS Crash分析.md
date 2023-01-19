@@ -29,3 +29,4 @@
 - [深入iOS系统底层之crash解决方法](https://www.jianshu.com/p/cf0945f9c1f8)
 - [深入iOS系统底层系列文章目录](https://www.jianshu.com/p/139f0899335d)
 - [深入iOS系统底层之XCODE对汇编的支持介绍](https://cloud.tencent.com/developer/article/1192667)
+- [iOS的崩溃捕获方案](http://silentcat.top/2017/11/23/iOS%E7%9A%84%E5%B4%A9%E6%BA%83%E6%8D%95%E8%8E%B7%E6%96%B9%E6%A1%88/)

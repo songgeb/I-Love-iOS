@@ -17,6 +17,18 @@
 - [Increasing Performance by Reducing Dynamic Dispatch](https://developer.apple.com/swift/blog/?id=27)
 - [Swift Protocol Extensions Method Dispatch](https://medium.com/@leandromperez/protocol-extensions-gotcha-9ef1a42c83b6)
 
+## Type property
+
+- 用`static`来创建stored type property或computed type property
+- 开发者必须为stored type property提供一个初始值，因为它不能像instance property时那样，在type初始化时为property赋一个初始值，而要求必须要有一个初始值
+- stored type property是lazy initialized
+- 而且stored type property还可以保证只初始化一次，并且是多线程安全的
+- 有一种情况下也可以使用`class`来修饰type property
+	- 仅当class中，且是computed type property
+	- 相比于static，class type property支持subclass重写
+
+> 当然，class function也是可以被subclass重写的
+
 ## OptionSet
 
 OptionSet作用类似于OC中按位枚举-`NS_OPTIONS`
@@ -191,6 +203,7 @@ print(v1.ref === v2.ref ? "true" : "false")
 2. dynamic关键词的深入理解，以及和@objc合用的注意事项
 3. 写算法时经常碰到的hashMap.keys到底是什么类型，和Array、String之间的关系是什么
 4. 哪些方法有sort方法，都有几种sort方法声明，每种写法如何
+5. 如何理解Swift support dynamic library而OC不支持？
 
 ## 参考
 - [What is new in Swift5](https://www.raywenderlich.com/55728-what-s-new-in-swift-5)

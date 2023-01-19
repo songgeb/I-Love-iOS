@@ -100,6 +100,12 @@ runtime也提供了直接获取方法实现地址的方法
 - 看上去好像`Warrior`能处理`negotiate`消息，好像`Warrior`对象继承了`Diplomat`的方法
 - 这就是所谓的多继承
 
+## Method Swizzling
+
+看到一篇分析Method Swizzling的风险点以及更优写法的文章
+
+- [https://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c](https://stackoverflow.com/a/8636521/5792820)
+
 ## Type Encodings
 
 - 未完待续

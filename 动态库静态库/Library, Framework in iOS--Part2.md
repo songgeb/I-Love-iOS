@@ -1,8 +1,16 @@
 # Library, Framework in iOS Part2
 
-## Cocoapods中如何管理不同的library
+> 深入理解代替单纯记忆
 
-前置条件：project, scheme, target, workspace
+> 本文图片托管在Github上
+
+本文依赖的试验环境：Xcode 13.4.1, Cocoapods 1.11.3
+
+本文主要探寻下**Cocoapods是如何管理不同的library的**
+
+阅读本文需要一些前置概念知识：
+
+比如要了解Xcode中project, scheme, target, workspace，还要了解library, framework的概念，可以看下前一篇内容[Library, Framework in iOS--Part1](https://juejin.cn/post/7187996246513188924)
 
 首次执行pod install后Cocoapods会产生ProjectName.xcworkspace，打开后发现有两个project：ProjectName和Pods
 
@@ -24,18 +32,13 @@ end
 
 Test-OC依赖于`libPods-Test-OC.a`
 
-![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/Libraries/pod_app_link_staticpod.png?raw=true)
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/Libraries/pod_app_link_staticpod.jpg?raw=true)
 
-在Pods这个Project中可以找到`Pods-Test-OC`这个target
-
-![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/pod_staticlibrary.png?raw=true)
-
-可以看出`Pods-Test-OC`是一个static library（mach-O type是static library且没有framework目录），所以是通过静态链接的方式与Test-OC链接的
-
-再来看一下Pods的其他target
+在Pods这个Project中可以找到`Pods-Test-OC`这个target以及其他target
 
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/Libraries/pod_staticpods.png?raw=true)
 
+- `Pods-Test-OC`是一个static library
 - 发现Podfile中依赖的所有library都在Pods的Project中
 - 且每个Pod都是static library
 
@@ -150,6 +153,7 @@ https://developer.apple.com/library/archive/documentation/DeveloperTools/Concept
 5. target membership是什么？为什么头文件、info.plist等文件不属于target membership.
 11. 如何判断一个framework是否为umbrella framework还是standard framework
 12. @import的使用，实践中如何用
+	- @import是不是就不需要bridge header了
 
 ## 参考
 - [Clang Module](http://chuquan.me/2021/02/11/clang-module/#more)
