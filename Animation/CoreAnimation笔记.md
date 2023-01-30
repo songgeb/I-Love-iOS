@@ -190,3 +190,4 @@
 ## 参考
 
 - [Core Animation Programing Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html)
+- [AsyncDisplayKit介绍（一）原理和思路](https://zhuanlan.zhihu.com/p/25371361)

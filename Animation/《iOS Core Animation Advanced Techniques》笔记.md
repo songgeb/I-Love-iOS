@@ -92,10 +92,17 @@ kept; anything else is discarded
 
 ## Implicit Animations
 
+Implicit Animations即隐式动画，就是那些由系统自动配置、提交执行的动画
+
+其实就是指property animation，无论直接修改或是通过UIView的animate系列方法进行动画，都是隐式动画
+
+因为作为调用者，我们无需配置动画时长、动画函数等设置，这些事情都有Core Animation框架替我们做了
+
 ### Transaction
 - 所有隐式动画都是由系统自动触发
-- 系统通过CATransaction类，将动画进行封装
-- CATransactioin的设计比较奇特，它并不只表示一个动画事务，其内部使用栈结构管理了很多个事务
+- 隐式动画的原理，是系统通过CATransaction类，将动画进行封装
+- CATransactioin的设计比较奇特
+	- 它不能通过传统的alloc创建使用，系统内部使用栈结构管理了很多个CATransactioin对象，我们只能像栈一样pop, push或获取top transaction的属性（比如动画时长）
 
 ### Layer Actions
 
@@ -279,8 +286,15 @@ Vector Graphics叫做矢量图形
 
 ### Asynchronous Drawing
 
+异步绘制，即支持将部分绘制任务移到非主线程中执行
+
+iOS系统原生提供了两种异步绘制机制
+
 - CATileLayer
+	- 可以通过设置切片layer，不同切片在绘制发生在非主线程
 - layer.asynchronousDrawing
+	- 开启该属性后，系统会自动配置drawLayer中的参数CGContext，绘制命令不会立即执行，会自动排队执行，以达到不影响用户交互的目的
+	- 适用于频繁绘制的场景
 
 ## Image IO
 
@@ -336,8 +350,8 @@ It is important to understand exactly when and why this happens so that you can 
 
 ## 问题
 1. 经测试，calayer的mask不支持动画
+2. implicit animation和explicit animation在原理上的区别是什么？
 2. uiview的类，直接修改frame无法产生隐式动画
-3. 一个layer，直接修改animatable property可以自动产生隐式动画。但一个view.layer，直接修改却不行
 4. 如何查看implicit animation的timingFunction
 5. self.layerView.layer.geometryFlipped
 6. 通过CoreGraphics画图，每次path变化都要重绘，性能不好，有什么办法优化吗？
