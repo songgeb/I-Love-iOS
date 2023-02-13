@@ -4,7 +4,7 @@
 
 一个移动应用，核心要实现的功能无外乎如下所示：
 
-![](https://github.com/songgeb/I-Love-iOS/blob/master/architecture/Images/App_responsibility.png)
+![](https://github.com/songgeb/I-Love-iOS/blob/master/architecture/Images/App_responsibility.png?raw=true)
 
 为了实现这些功能，技术层面要解决如下的问题：
 
@@ -48,7 +48,6 @@ iOS的架构有MVC, MVCS, MVVM, VIPER, MVP
 #### MVCS
 
 胖Model与瘦Model
-
 
 ## Q&A
 

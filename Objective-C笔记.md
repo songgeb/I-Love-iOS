@@ -89,11 +89,28 @@ NSLog(@"%%"); //正确姿势，且适用于`print`和Swift的String方法
 - UNAVAILABLE_ATTRIBUTE
 - NS_DESIGNATED_INITIALIZER
 
-### NSMapTable的使用
+### Protocol
 
-- [NSMapTable: more than an NSDictionary for weak pointers](http://www.cocoawithlove.com/2008/07/nsmaptable-more-than-nsdictionary-for.html)
+```
+@protocol TOCProtocolA <NSObject>
++ (void)doClassMethod;
+- (void)doSth;
+@end
 
-### NSHashTable
+  // 写代码表示一个对象，一个类，一个遵循了某协议的对象，一个协议本身，一个遵循某协议的类
+  UIViewController *obj1 = [UIViewController new];
+  id obj2 = [UIViewController new];
+  
+  Class class1 = [UIViewController class];
+  Class class2 = [obj1 class];
+  
+  id<UITableViewDataSource> protocolObject = [UITableViewController new];
+  
+  Protocol *p = @protocol(TOCProtocolA);
+  
+  Class<TOCProtocolA> protocolClass = [TOFoundationViewController class];
+  [protocolClass doClassMethod];
+```
 
 
 ## 参考
