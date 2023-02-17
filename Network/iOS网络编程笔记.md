@@ -71,7 +71,6 @@
 
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/Socket_architecture.png?raw=true)
 
-
 ### 带着问题学习
 1. iOS中长链接的实现方式有哪些，特点和使用场景是什么
 2. WebSocket与Socket区别是什么
