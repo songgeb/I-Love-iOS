@@ -21,7 +21,6 @@ NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 
 `compile-time constant`，我第一反应是不知道什么意思
 
-
 ## 参考
 
 - [Initializer element is not a compile-time constant using C](https://stackoverflow.com/questions/65774807/initializer-element-is-not-a-compile-time-constant-using-c)

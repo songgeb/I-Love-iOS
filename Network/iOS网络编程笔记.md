@@ -62,6 +62,37 @@
 
 ## Handling an Authentication Challenge
 
+## Socket
+
+- socket翻译为套接字，是支持TCP/IP协议的网络通信的基本操作单元。
+- 它是网络通信过程中端点的抽象表示，包含进行网络通信必须的五种信息：连接使用的协议，本地主机的IP地址，本地进程的协议端口，远地主机的IP地址，远地进程的协议端口。
+- socket是在应用层和传输层之间的一个抽象层，它把TCP/IP层复杂的操作抽象为几个简单的接口供应用层调用已实现进程在网络中通信。
+- 它不属于OSI七层协议，它只是对于TCP，UDP协议的一套封装，让我们开发人员更加容易编写基于TCP、UDP的应用。
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/Socket_architecture.png?raw=true)
+
+
+### 带着问题学习
+1. iOS中长链接的实现方式有哪些，特点和使用场景是什么
+2. WebSocket与Socket区别是什么
+
+### 初识Socket
+
+![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/Socket_communication_process.png?raw=true)
+
+- iOS框架层面没有对socket的支持；但C的代码库中有socket的相关API，可以用之
+- 根据 [iOS 用原生代码写一个简单的socket连接](https://juejin.cn/post/6844903940459331598)的demo可以完整的体验一把简单地socket长链接
+
+需要注意的是
+
+- 必须需要一端首先出于accept状态后，另一端才能建立连接和发送数据
+
+### 长链接方案
+
+
+### 参考
+- [iOS 用原生代码写一个简单的socket连接](https://juejin.cn/post/6844903940459331598)
+- [聊聊iOS中网络编程长连接的那些事](https://zhuanlan.zhihu.com/p/34944894)
 
 ## 遗留问题
 1. 如何处理重定向问题
