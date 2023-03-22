@@ -143,6 +143,10 @@ UIView.animate(withDuration: 0.5) {
 1. 建议用hidden，不建议频繁remove/add constraints
 2. 当frame和autolayout布局混用时，`systemLayoutSizeFitting`这个方法每次都会创建、删除一个engine，比较耗性能，要注意。
 
+### 最佳实践
+
+- [SnapKit 最佳实践](https://kemchenj.github.io/2018-04-05/)
+
 ### 疑问
 1. layoutMargin和readableMargin属性杂用？
 

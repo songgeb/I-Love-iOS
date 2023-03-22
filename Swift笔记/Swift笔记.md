@@ -198,6 +198,67 @@ print(v1.ref === v2.ref ? "true" : "false")
 
 其实就是支持在fnction中定义一个和parameter name相同的变量或常量
 
+## Dynamic in Swift
+
+dynamic is a declaration modifier.
+
+> “Apply this modifier to any member of a class that can be represented by Objective-C. When you mark a member declaration with the dynamic modifier, access to that member is always dynamically dispatched using the Objective-C runtime. Access to that member is never inlined or devirtualized by the compiler.
+Because declarations marked with the dynamic modifier are dispatched using the Objective-C runtime, they must be marked with the objc attribute.”
+
+以上是官方的解释，但官方没有说为什么要有此modifier，以及何时使用？
+
+经过搜索，发现如下回答说的比较不错
+
+> A function/variable declared as @objc is accessible from Objective-C, but Swift will continue to access it directly via static or virtual dispatch. This means if the function/variable is swizzled via the Objective-C framework, like what happens when using Key-Value Observing or the various Objective-C APIs to modify classes, calling the method from Swift and Objective-C will produce different results.
+
+> Using dynamic tells Swift to always refer to Objective-C dynamic dispatch. This is required for things like Key-Value Observing to work correctly. When the Swift function is called, it refers to the Objective-C runtime to dynamically dispatch the call.
+
+简单总结下：
+
+- @objc是一个attribute，它用于控制Swift到OC的可见性。但并不控制在访问被修饰的属性或方法时的查找过程，是通过OC Runtime的消息派发（message dispatch）还是通过Swift中的static或者virtual dispatch
+- dynamic则可以控制查找过程。有该修饰符的则使用OC Runtime的消息派发
+- 正因如此，dynamic仅能用于类，且是OC的类或子类（因为非OC类或者非类无法使用OC Runtime特性）
+- Method Swizzling、KVO等特性使用了OC Runtime，所以想在Swift中使用这些特性，大概率是绕不过dynamic修饰符的。下面举个例子
+
+```
+class DynamicTestClass: NSObject {
+    var a: NSNumber?
+}
+
+private func testKVOWithDynamicModifier() {
+	testA = DynamicTestClass()
+	testA?.addObserver(self, forKeyPath: "a", context: nil)
+        
+	DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+		self.testA?.a = NSNumber(value: 3)
+	}
+}
+    
+override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+	print(keyPath)
+	print(change)
+}
+```
+
+以上代码的KVO是不能正常工作的。我们做如下修改后
+
+```
+class DynamicTestClass: NSObject {
+    dynamic var a: NSNumber?
+}
+```
+
+仍然不能正常工作：❌
+
+```
+class DynamicTestClass: NSObject {
+    @objc dynamic var a: NSNumber?
+}
+```
+
+这样就可以了：✔️
+
+
 ## 疑问
 1. Swift是类型安全语言？类型安全是什么意思？
 2. dynamic关键词的深入理解，以及和@objc合用的注意事项

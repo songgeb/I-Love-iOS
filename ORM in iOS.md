@@ -1,2 +1,0 @@
-# ORM in iOS
-
