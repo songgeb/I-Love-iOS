@@ -13,3 +13,4 @@ OC里这种写法，在Swift中无法识别成正常的enum
 ## 参考
 
 - [Imported C and Objective-C APIs](https://developer.apple.com/documentation/swift/imported_c_and_objective-c_apis)
+- [Using Imported C Macros in Swift](https://developer.apple.com/documentation/swift/using-imported-c-macros-in-swift)
