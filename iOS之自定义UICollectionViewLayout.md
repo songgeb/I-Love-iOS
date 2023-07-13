@@ -4,11 +4,11 @@
 
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/customcollectionviewlayout_coreprocess.png?raw=true)
 
-大致分三个阶段：
+UICollectionView进行布局时需要借助UICollectionViewLayout，两者交互的过程大致分三个阶段：
 
-1. 首先执行`prepare`方法，做数据准备
-2. 通过`collectionViewContentSize`属性或方法获取滚动视图的内容尺寸
-3. 通过`layoutAttributesForElementsInRect: `方法获取正在展示中的cell的样式等信息
+1. 首先执行UICollectionViewLayout的`prepare`方法，做数据准备
+2. UICollectionView通过UICollectionViewLayout 的`collectionViewContentSize`属性或方法获取滚动视图的内容尺寸
+3. UICollectionView通过UICollectionViewLayout的`layoutAttributesForElementsInRect: `方法获取正在展示中的cell的样式等信息
 
 ## 如何自定义布局
 

@@ -43,3 +43,4 @@ songgeb is not Nothing Else #Matters
 ## References
 
 - [What’s New in Swift 5?](https://www.kodeco.com/55728-what-s-new-in-swift-5)
+- [How to use custom string interpolation](hackingwithswift.com/articles/163/how-to-use-custom-string-interpolation-in-swift)
