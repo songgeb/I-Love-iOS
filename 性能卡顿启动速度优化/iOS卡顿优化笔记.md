@@ -74,11 +74,27 @@ Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting
 
 建议参考[Improving app responsiveness](https://developer.apple.com/documentation/xcode/improving-app-responsiveness)
 
+此处对官方[Improving app responsiveness](https://developer.apple.com/documentation/xcode/improving-app-responsiveness)的建议进行简单概括：
+
+
+
+
 ## 监控卡顿
 
 ### 衡量卡顿
 
 #### Apple
+
+hang and hitch
+
+> hang: The time between user input and the screen update is too long, so the app’s UI doesn’t seem like it’s responding instantaneously anymore. A noticeable delay between user input and the corresponding screen update is called a hang. For more information, see [Understanding hangs in your app](https://developer.apple.com/documentation/xcode/understanding-hangs-in-your-app).
+
+> hitch: The motion onscreen isn’t fluid like it would be in the real world. An example is when the screen seems to get stuck and then jumps ahead during scrolling or during an animation. This is called a hitch.
+
+
+两者的概念和区别可以参考 [Understanding user interface responsiveness](https://developer.apple.com/documentation/xcode/understanding-user-interface-responsiveness)
+
+> 二者的区别不容易
 
 苹果官方对于小的卡顿（而非卡死）叫做"Hitch"。并使用使用hitch ratio来衡量卡顿的严重性
 
@@ -91,6 +107,8 @@ Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting
 hitch ratio相比hitch time更具有可比性，在不同刷新率设备和不同程序运行时长下都是可行的
 
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/hitch_ratio.png?raw=true)
+
+以上参考自《》[]()
 
 #### 字节
 下图为字节监控卡顿时所采用的标准，供参考
@@ -178,6 +196,14 @@ double actualFramesPerSecond = 1 / (displaylink.targetTimestamp - displaylink.ti
 
 所以猜测，官方此处给的fps，和我们平常理解的有些出入
 
+## 疑问
+
+官方有句话是这样说的：
+
+> For a hang, only the delay between a user interaction and the corresponding screen update is relevant. For more information about hangs, see Understanding hangs in your app. To avoid a hitch, which describes a failure in fluid motion, it’s only relevant to be able to update the screen with each screen refresh. The delay between user input and screen update isn’t relevant for a hitch.
+
+对于最后一句话`The delay between user input and screen update isn’t relevant for a hitch.`我一直没理解
+
 ## 参考
 - [Explore UI animation hitches and the render loop-WWDC](https://developer.apple.com/videos/play/tech-talks/10855/)
 - [天罗地网？ iOS卡顿监控实战（开源）](https://juejin.im/post/5db65fe0e51d452a1e58f37c)
@@ -186,3 +212,5 @@ double actualFramesPerSecond = 1 / (displaylink.targetTimestamp - displaylink.ti
 - [iOS Core Animation: Advanced Techniques](https://www.oreilly.com/library/view/ios-core-animation/9780133440744/)
 - [Tencent/matrix](https://github.com/Tencent/matrix)
 - [iOS 列表滑动的卡顿检测和优化](https://juejin.cn/post/7018601113855197198)
+- [Understanding user interface responsiveness](https://developer.apple.com/documentation/xcode/understanding-user-interface-responsiveness)
+- [Understand and eliminate hangs from your app](https://developer.apple.com/videos/play/wwdc2021/10258/)

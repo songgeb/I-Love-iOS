@@ -29,7 +29,7 @@
 
 ### Background Task changs
 
-BackgroundTask从策略上进行了一次改变
+自iOS 7开始，后台执行任务从策略上进行了一次大的调整，该小节简述整个后台任务的核心策略思想（注意：此时Background Task并不是一个框架或者一个专有名词）
 
 - iOS 7之前，进入后台后，App会保持一定的时间仍在运行
 - iOS 7之后，进入后台后，App将会很快让App进行休眠，回收网络等资源，尽可能节省电量。但为了能够完成BackgroundTask，会在更合适的时机（比如下次系统应用Email尝试后台拉取邮件时）尝试给我们App的BackgroundTask资源和时间来执行任务
@@ -78,18 +78,19 @@ BackgroundTask从策略上进行了一次改变
 也是新增的一个特性
 
 - 支持当有远程推送到达时，系统将应用启动，进入后台，并执行一些逻辑
-- 同时也可以支持slient remote notification
+- 同时也可以支持silent remote notification
 	- App会收到推送事件，也会进入后台执行逻辑，但并不会有推送信息告知用户
 	- 此时apns消息中需要移除alert字段
 
-> slient remote notification的发送频率是受系统限制的，不能太频繁
+> silent remote notification的发送频率是受系统限制的，不能太频繁
 
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios-background-remotenotification.png?raw=true)
 
 #### 应用场景
 
 场景1：TV App下载Video
-1. App通过slient remote notification在后台下载video
+
+1. App通过silent remote notification在后台下载video
 2. 下载ok后发送local notification告知用户
 3. 用户打开App直接观看
 
@@ -107,7 +108,7 @@ BackgroundTask从策略上进行了一次改变
 
 ## Background Tasks
 
-WWDC2019中引入了执行Background execution的新框架`BackgroundTasks`
+WWDC2019中引入了执行后台任务（Background execution）的新框架`BackgroundTasks`
 
 - 引入新框架原因大概是，之前后台任务的API比较离散，使用起来不够统一
 - `BackgroundTasks`则是对不同的后台任务进行了梳理分类，统一了统一的API和使用套路
@@ -138,6 +139,7 @@ WWDC2019中引入了执行Background execution的新框架`BackgroundTasks`
 	- 所以Background App Refresh的意思应该是指那些可能在后台执行任务的总开关
 
 ## 参考
+- [User Notifications](https://developer.apple.com/documentation/usernotifications)
 - [WWDC 2013 Session笔记 - iOS7中的多任务](https://onevcat.com/2013/08/ios7-background-multitask/)
 - [WWDC 2013 PPT-What’s New with Multitasking](https://devstreaming-cdn.apple.com/videos/wwdc/2013/204xex2xvpdncz9kdb17lmfooh/204/204.pdf)
 - [Why is my app getting killed?](https://developer.apple.com/videos/play/wwdc2020/10078/)
