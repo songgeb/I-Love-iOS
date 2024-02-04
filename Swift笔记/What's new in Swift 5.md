@@ -40,6 +40,13 @@ print(#"songgeb is not \#(track)"#)
 songgeb is not Nothing Else #Matters
 ```
 
+## Some vs Any
+
+
+参考
+
+- [Understanding the “some” and “any” keywords in Swift 5.7](https://swiftsenpai.com/swift/understanding-some-and-any/)
+
 ## References
 
 - [What’s New in Swift 5?](https://www.kodeco.com/55728-what-s-new-in-swift-5)
