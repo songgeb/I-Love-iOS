@@ -184,3 +184,4 @@ iOS系统在一些优先级翻转的情况下会尝试提高低优先级任务�
 - [iOS探索 多线程之GCD应用](https://juejin.im/post/5e8b2c9451882573ac3ce409)
 - [Operation and OperationQueue Tutorial in Swift](https://www.raywenderlich.com/5293-operation-and-operationqueue-tutorial-in-swift)
 - [NSOperation](https://nshipster.com/nsoperation/)
+- [Thread Safety Summary](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafetySummary/ThreadSafetySummary.html)

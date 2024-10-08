@@ -58,25 +58,12 @@ struct SmallRectangle {
 
 这些高级用法主要是来自`Property Wrapper`的不同初始化方法。那么`Property Wrapper`有几种初始化方式呢？
 
-两类初始化方法，分别是：
+因为`Property Wrapper`可以用`class、struct、enum`任意类型表示，那初始化方法按照对应type写即可。但是，其中有一种初始化方法比较特殊---类似`init(wrappedValue:)`，即初始化方法中包含`wrappedValue`参数的情况
+
+所以，下面我们据此分成两类初始化方法进行描述
 
 - 系统默认或自定义初始化方法
-- `init(wrappedValue: T)`
-
-### 系统默认初始化方法
-
-```
-struct SmallRectangle {
-    @TwelveOrLess var height: Int
-    @TwelveOrLess var width: Int
-}
-```
-
-比如上面代码中，当初始化`SmallRectangle`时，其实等价于
-
-```
-SmallRectangle(height: TwelveOrLess(), width: TwelveOrLess())
-```
+- 有`wrappedValue`参数的初始化方法
 
 ### 自定义初始化方法
 
@@ -92,41 +79,28 @@ struct SmallNumber {
         set { number = min(newValue, maximum) }
     }
 
-
     init() {
         maximum = 12
         number = 0
     }
-    init(wrappedValue: Int) {
-        maximum = 12
-        number = min(wrappedValue, maximum)
-    }
-    init(wrappedValue: Int, maximum: Int) {
-        self.maximum = maximum
-        number = min(wrappedValue, maximum)
-    }
 }
 
 struct NarrowRectangle {
-    @SmallNumber(wrappedValue: 2, maximum: 5) var height: Int
-    @SmallNumber(maximum: 9) var width: Int = 2
+	@SmallNumber var number: Int
 }
 ```
 
-上述`NarrowRectangle`的初始化则等价于
+- 上面代码中`SmallNumber`提供了一个初始化方法
+- `NarrowRectangle`中`number`的写法，就是使用了上述初始化方法
+- 注意一点，由于使用了`SmallNumber`初始化方法，所以可以认为默认情况下，`NarrowRectangle.number`是被赋值为0的，所以`let abc = NarrowRectangle()`写法是不会编译报错的，因为`number`可以被正确初始化
 
-```
-NarrowRectangle(height: SmallNumber(wrappedValue: 2, maximum: 5), width: SmallNumber(wrappedValue: 2, maximum: 9))
-```
-
-### `init(wrappedValue: T)`初始化
+### 有`wrappedValue`参数的初始化方法
 
 ```
 @propertyWrapper
 struct SmallNumber {
     private var maximum: Int
     private var number: Int
-
 
     var wrappedValue: Int {
         get { return number }
@@ -151,10 +125,23 @@ struct SmallNumber {
 struct UnitRectangle {
     @SmallNumber var height: Int = 1
     @SmallNumber var width: Int = 2
+    @SmallNumber(wrappedValue: 2, maximum: 5) var  height: Int // 3
+    @SmallNumber(maximum: 9) var width: Int = 2 // 4
 }
 ```
 
-此处`@SmallNumber var height: Int = 1`的写法就等价于，`UnitRectangle(height: SmallNumber(wrappedValue: 1), width: SmallNumber(wrappedValue: 2))`
+- 参数中有`wrappedValue`参数时，为`wrappedValue`传参的方式比较特殊---此处`@SmallNumber var height: Int = 1`的写法就时将1作为`wrappedValue`进行传值
+- 原理上讲的话，就等价于`UnitRectangle(height: SmallNumber(wrappedValue: 1), width: SmallNumber(wrappedValue: 2))`
+- 还有更复杂的初始化，比如后面两种初始化方法
+- `UnitRectangle`中3和4写法则使用了第3个初始化方法
+
+## 总结
+
+- `Property Wrapper`在property的存取过程中添加了一个中间层，可以增加自定义逻辑
+- `Property Wrapper`可以将重复代码进行抽离、复用
+- `Property Wrapper`的工作原理是编译器自动合成代码
+- `Property Wrapper`的工作原理要求property必须是`var`的
+- 基于`Property Wrapper`原理可以应用于复杂的场景，比如简化`Codable`过程--参考`CodableWrapper`和`ExCodable`代码库
 
 
 

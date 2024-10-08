@@ -17,6 +17,9 @@
 - 这个`Binder`主要是用于`view`和`viewModel`之间数据同步的
 - `view`和`viewModel`之间一般是双向绑定，`view`的事件会触发`viewModel`数据更新；`viewModel`的数据变化会导致`view`状态变化
 
+## 疑问
+1. 对比一下有无observer实现方案的区别，是否必须做数据监听
+
 ## 参考
 - [ReactiveCocoa and MVVM, an Introduction](http://thumbworks.io/blog/2014/12/06/reactivecocoa-mvvm-introduction/)
 - [iOS 关于MVVM Without ReactiveCocoa设计模式的那些事](https://zhuanlan.zhihu.com/p/38420233)

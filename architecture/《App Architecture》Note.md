@@ -69,6 +69,11 @@ As with all good patterns, this isn’t just about moving code into a new locati
 ### 疑问
 1. 订阅model操作也要在ViewModel中吗？
 
+## MVC+VS
+
+MVC+ViewState
+
+
 ## 疑问
 1. 如何理解书中提到的View State
 2. MVVM+C中的Coordinator的优势是什么？

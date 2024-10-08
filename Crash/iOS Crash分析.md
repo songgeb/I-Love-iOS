@@ -18,6 +18,11 @@
 - 0xdeadfa11，表示 App 被用户强制退出。
 - 0xc00010ff，表示 App 因为运行造成设备温度太高而被杀掉。
 
+## Xcode Tool
+### Address Sanitizer
+
+## 
+
 ## Q&A
 
 1. 系统在后台杀死App的原因是什么？
@@ -30,3 +35,5 @@
 - [深入iOS系统底层系列文章目录](https://www.jianshu.com/p/139f0899335d)
 - [深入iOS系统底层之XCODE对汇编的支持介绍](https://cloud.tencent.com/developer/article/1192667)
 - [iOS的崩溃捕获方案](http://silentcat.top/2017/11/23/iOS%E7%9A%84%E5%B4%A9%E6%BA%83%E6%8D%95%E8%8E%B7%E6%96%B9%E6%A1%88/)
+- [【老司机精选】iOS 符号化：基础与进阶](https://juejin.cn/post/7084044616864890893)
+- [Adding identifiable symbol names to a crash report](https://developer.apple.com/documentation/xcode/adding-identifiable-symbol-names-to-a-crash-report#Symbolicate-the-crash-report-with-the-command-line)
