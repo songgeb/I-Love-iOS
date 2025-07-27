@@ -64,7 +64,7 @@ print(count as Any)
 
 > force unwrapping in keypath can also cause runtime error
 
-### Identify Key Path
+### Identity Key Path
 
 `\.self` or `\Type name.self` refers to a whole instance.
 
@@ -97,4 +97,5 @@ let descriptions2 = toDoList.filter { $0.completed }.map { $0.description }
 ```
 
 ## Reference
+- [Key-Path Expression-The Swift Programing Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/expressions/#Key-Path-Expression)
 - [What is a KeyPath in Swift](https://sarunw.com/posts/what-is-keypath-in-swift/)

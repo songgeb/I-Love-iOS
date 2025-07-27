@@ -42,6 +42,12 @@
 
 > 如果在后台任务中，要执行网络传输工作的话，建议使用新引入的`NSURLSession`的background session。该部分后面会提到
 
+自iOS 7开始，iOS推出了几种可以在后台执行任务的方式：
+
+1. Background Fetch
+2. Remote Notification
+3. Background Transfer service
+
 ### Background Fetch
 
 - 系统提供了一个新的API，支持在后台拉取数据，并且可以更新UI
@@ -111,7 +117,7 @@
 WWDC2019中引入了执行后台任务（Background execution）的新框架`BackgroundTasks`
 
 - 引入新框架原因大概是，之前后台任务的API比较离散，使用起来不够统一
-- `BackgroundTasks`则是对不同的后台任务进行了梳理分类，统一了统一的API和使用套路
+- `BackgroundTasks`则是对不同的后台任务进行了梳理分类，统一了API和使用套路
 
 ![](https://github.com/songgeb/I-Love-iOS/blob/master/Images/ios-backgroundtasks-structure.png?raw=true)
 
@@ -144,3 +150,4 @@ WWDC2019中引入了执行后台任务（Background execution）的新框架`Bac
 - [WWDC 2013 PPT-What’s New with Multitasking](https://devstreaming-cdn.apple.com/videos/wwdc/2013/204xex2xvpdncz9kdb17lmfooh/204/204.pdf)
 - [Why is my app getting killed?](https://developer.apple.com/videos/play/wwdc2020/10078/)
 - [Advances in App Background Execution](https://developer.apple.com/videos/play/wwdc2019/707/)
+- [How to Push and Handle Background Push Notifications in iOS](https://apnspush.com/how-to-push-background-notifications)

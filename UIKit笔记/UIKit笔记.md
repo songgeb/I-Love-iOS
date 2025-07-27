@@ -105,3 +105,6 @@ BOOL willHide = beginFrame.origin.y < SCREEN_HEIGHT && endFrame.origin.y >= SCRE
 	- 这样sizeThatFit方法中可以返回正确的宽高度
 	- 同时，intrinsicContentSize也要有返回值，不能返回0
 	- 而且要衡量view不同方法调用时机，避免出现循环调用问题
+## UIProgressView
+
+- 设置高度时，只能通过autolayout，通过frame不起作用

@@ -149,16 +149,117 @@ FOUNDATION_EXPORT NSKeyValueChangeKey const NSKeyValueChangeNotificationIsPriorK
 - 被注册的对象的isa指针将指向该class
 - 所以当被观察的属性发生变化时，observer会收到通知
 
-### KVO in Swift?
+### KVO in Swift
 
 Automatic Change Notification依赖的是NSObject的默认实现，所以要求参与到KVO的对象必须是NSObject的子类
 
 Manual Change Notification中重写的`+ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key`方法也是NSObject中的
 
-- 所以KVO是依赖NSObject的
-- Swift中NSObject的子类是可以应用KVO的
-- Swift中纯Swift的类不支持KVO（但可以使用属性的willSet和didSet特性）
+- KVO本质是依赖于OC的Runtime，所以要求必须是NSObject的子类才可以被观察
+- 在Swift中也是如此，Swift并没有重新实现KVO，仍是基于OC的Runtime
+- 所以纯Swift的类不支持KVO（但可以使用属性的willSet和didSet特性）
 
+#### 如何实现
+
+由于Swift兼容了Objective C语言的语法，所以在Swift中可以使用所有KVO的api，除此之外，也针对Swift有更简洁的API，如下所示：
+
+首先要求被观察的属性，必须使用`@objc`和`@dynamic`标记
+
+```
+class MyObjectToObserve: NSObject {
+    @objc dynamic var myDate = NSDate(timeIntervalSince1970: 0) // 1970
+    func updateDate() {
+        myDate = myDate.addingTimeInterval(Double(2 << 30)) // Adds about 68 years.
+    }
+}
+```
+
+添加和移除监听代码如下所示：
+
+```
+class MyObserver: NSObject {
+    @objc var objectToObserve: MyObjectToObserve
+    var observation: NSKeyValueObservation?
+
+
+    init(object: MyObjectToObserve) {
+        objectToObserve = object
+        super.init()
+
+
+        observation = observe(
+            \.objectToObserve.myDate,
+            options: [.old, .new]
+        ) { object, change in
+            print("myDate changed from: \(change.oldValue!), updated to: \(change.newValue!)")
+        }
+    }
+    
+    func invalidateObservation() {
+        observation?.invalidate()
+    }
+}
+```
+
+- 添加观察者的方式可以使用closure
+- 观察的属性可以使用keypath
+- 移除观察使用`invalidate`方法，且即使忘记移除，在`NSKeyValueObservation`销毁时，也会自动执行`invalidate`
+
+#### 与传统KVO方式对比
+
+| 对比维度                 | Objective-C KVO                                      | Swift KVO（NSKeyValueObservation）             |
+| -------------------- | ---------------------------------------------------- | -------------------------------------------- |
+| **依赖机制**             | 完全依赖 Objective-C Runtime                             | 依然依赖 Objective-C Runtime（通过 `@objc dynamic`） |
+| **使用前提**             | 对象必须继承自 `NSObject`，属性无需特殊标记                          | 对象必须继承自 `NSObject`，属性必须标记为 `@objc dynamic`   |
+| **属性声明方式**           | `@property` + 自动生成 setter                            | `@objc dynamic var`（动态派发并暴露给 OC Runtime）     |
+| **注册方式**             | `addObserver:forKeyPath:options:context:`            | `observe(_:options:changeHandler:)`          |
+| **回调方式**             | 重写 `observeValueForKeyPath:ofObject:change:context:` | 使用闭包（`changeHandler`）回调                      |
+| **移除监听方式**           | 必须手动调用 `removeObserver:`                             | 自动移除（`NSKeyValueObservation` 被释放时自动解绑）       |
+| **类型安全性**            | 不安全（KeyPath 是字符串，容易写错）                               | 类型安全（使用 Swift 的 KeyPath 表达式）                 |
+| **代码结构**             | 所有观察逻辑集中在一个回调方法中                                     | 每次观察都是独立闭包，结构清晰                              |
+| **易错点**              | 忘记移除观察者容易导致崩溃；字符串拼错                                  | 几乎无崩溃风险，编译期能检查类型和 KeyPath                    |
+| **对 Swift 支持度**      | 属于兼容方式，较为笨重                                          | 更符合 Swift 风格，简洁且安全                           |
+| **脱离 OC Runtime 能力** | 无法脱离（完全依赖）                                           | 也无法完全脱离（仍需依赖 OC Runtime）                     |
+| **更现代的替代方案**         | 无                                                    | 可替代为 Combine、SwiftUI 的 @Published 等          |
+
+#### Swift KVO坑
+
+很可惜的是，Swift的KVO写法有一个多年未解决的bug（2017-2025）
+
+问题描述：如果观察的对象是一个`RawRepresentable`类型数据时（如`enum`），`change`中`newValue`和`oldValue`始终是nil
+
+```
+timeControlStatusObservation = avPlayer.observe(
+    \AVQueuePlayer.timeControlStatus,
+    options: [.old, .new],
+    changeHandler: {
+        [weak self] (player, change) in
+        print("timeControlState: \(change.oldValue), \(change.newValue), \(self?.avPlayer.timeControlStatus)")
+    })
+
+// 输出结果：
+timeControlState: nil, nil, Optional(playing) 
+timeControlState: nil, nil, Optional(paused)
+```
+
+问题链接：[swift - KVO - change.newValue and change.oldValue are nil](https://stackoverflow.com/questions/47210513/swift-kvo-change-newvalue-and-change-oldvalue-are-nil)
+
+苹果官方Github上的讨论：[Fix KVO for RawRepresentable types](https://github.com/swiftlang/swift-corelibs-foundation/pull/3114)
+
+解决方案：
+
+1. 改回传统方式
+2. 使用`Combine`方式
+	
+	```
+	let cancellable = player.currentItem?.publisher(for: \.status).sink { status in
+      print("AVPlayer Status Change: \(status)")
+    }
+        
+    let cancellable = player.publisher(for: \.timeControlStatus).sink { timeControlStatus in
+      print("AVPlayer TimeControlStatus Change: \(timeControlStatus)")
+    }
+	```
 
 ### 应用场景
 
@@ -173,9 +274,7 @@ Manual Change Notification中重写的`+ (BOOL)automaticallyNotifiesObserversFor
 
 - Cocoa应用程序(mac OS的App)中，Controller和Model之间使用KVO的情形比较多
 
-### QA
-
-
 ### 参考
 - [Introduction to Key-Value Observing Programming Guide
 ](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html#//apple_ref/doc/uid/10000177-BCICJDHA)
+- [Using Key-Value Observing in Swift](https://developer.apple.com/documentation/swift/using-key-value-observing-in-swift)

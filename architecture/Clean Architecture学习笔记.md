@@ -59,6 +59,9 @@ Clean Architecture是Robert C. Marti在2012年提出的概念，他汇总了已�
 ### Crossing boundaries
 
 - 有时内圈是需要使用外圈的，但直接使用就违反了单向依赖原则
+- 上图右下角就是一个跨层数据传递，程序执行的一个例子
+- 该例子中，Controller、Presenter层需要与内层的use case进行跨层交互
+- 
 
 ### 总结
 
