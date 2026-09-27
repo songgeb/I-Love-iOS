@@ -1,0 +1,4 @@
+{
+  "name": "I-Love-iOS",
+  "install": "bash .cursor/install.sh"
+}
