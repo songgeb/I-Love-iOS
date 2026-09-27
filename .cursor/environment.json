@@ -1,0 +1,4 @@
+{
+  "name": "I-Love-iOS",
+  "install": "bash -c 'set -euo pipefail; export DEBIAN_FRONTEND=noninteractive; command -v cloc >/dev/null 2>&1 || (sudo apt-get update -qq && sudo apt-get install -y -qq cloc); command -v shellcheck >/dev/null 2>&1 || (sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck)'"
+}
